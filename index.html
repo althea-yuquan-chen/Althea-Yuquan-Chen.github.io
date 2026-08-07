@@ -1,167 +1,667 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yuquan Chen - Portfolio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; }
-        header { background: #ffffff; color: #212529; padding: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
-        .header-content { display: flex; align-items: center; justify-content: space-around; width: 100%; max-width: 960px; }
-        .header-text { text-align: left; }
-        header h1 { margin-bottom: 10px; font-weight: bold; }
-        .profile-photo { width: 200px; height: 200px; object-fit: cover; margin-right: 20px; border-radius: 0; box-shadow: none; }
-        section { margin: 40px 0; }
-        h2 { border-bottom: 2px solid #0d6efd; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.5rem; }
-        .contact { font-size: 1rem; color: #212529; }
-        .contact a { color: inherit; text-decoration: none; transition: color 0.3s ease;}
-        .contact a:hover { color: #0d6efd; }
-        .item { margin-bottom: 20px; }
-        .social-link { display: inline-block; margin-right: 10px; vertical-align: middle; }
-        .social-link svg { width: 30px; height: 30px; }
-        footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 0.9rem; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuquan Chen — AI Engineer</title>
+<meta name="description" content="Yuquan Chen — AI Engineer. Building production multi-agent systems and applied ML.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:        #17233F;
+    --navy:       #1C3964;
+    --navy-2:     #223E75;
+    --slate:      #57607A;
+    --slate-light:#8A93AA;
+    --bg:         #F7F6F2;
+    --panel:      #FFFFFF;
+    --line:       #E4E1D8;
+    --gold:       #B8843C;
+    --gold-soft:  #F2E6D1;
+    --radius:     2px;
+  }
 
-        @media (min-width: 768px) {
-            header { flex-direction: row; justify-content: space-around; }
-            .profile-photo { margin-bottom: 0; }
-            .header-text { text-align: left; }
-        }
-    </style>
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;}
+  ::selection{background:var(--gold-soft); color:var(--navy);}
+
+  .wrap{max-width:1680px; margin:0 auto; padding:0 clamp(24px, 10vw, 190px);}
+
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+    color:var(--navy);
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--slate-light);
+    margin:0 0 10px 0;
+  }
+  .eyebrow .num{color:var(--gold); margin-right:6px;}
+
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    padding:4px 10px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    color:var(--slate);
+    background:var(--panel);
+    margin:0 6px 6px 0;
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:transparent;
+    mix-blend-mode:difference;
+  }
+  .nav-inner{
+    max-width:1680px; margin:0 auto; padding:22px clamp(24px, 10vw, 190px);
+    display:flex; align-items:center; justify-content:flex-end;
+  }
+  .nav-links{display:flex; gap:26px; align-items:center;}
+  .nav-links a{
+    font-size:0.88rem; text-decoration:none; color:#fff;
+    transition:opacity 0.15s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{opacity:0.6;}
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    padding:7px 14px;
+    border:1px solid #fff;
+    border-radius:20px;
+    text-decoration:none;
+    color:#fff !important;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{opacity:0.6;}
+  .nav-toggle{display:none;}
+
+  @media (max-width:680px){
+    .nav-links a:not(.nav-cta){display:none;}
+  }
+
+  /* ---------- Full-viewport Hero ---------- */
+  .hero-full{
+    position:relative;
+    min-height:100svh;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-end;
+    overflow:hidden;
+    background:var(--ink);
+  }
+  .hero-inner{
+    position:relative; z-index:2;
+    width:100%;
+    padding:0 clamp(24px, 10vw, 190px) 56px clamp(24px, 10vw, 190px);
+    max-width:1680px;
+    margin:0 auto;
+  }
+  .hero-eyebrow{
+    display:flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem; color:#C9D1E0;
+    margin:0 0 14px 0;
+  }
+  .hero-eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0;}
+  .hero-full h1{
+    font-size:clamp(3.4rem, 11vw, 9rem);
+    line-height:0.9;
+    letter-spacing:-0.02em;
+    color:#F7F6F2;
+  }
+  .hero-subtitle{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:clamp(0.95rem, 2vw, 1.15rem);
+    color:#C9D1E0;
+    margin:22px 0 0 0;
+    max-width:560px;
+  }
+  .hero-type{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:clamp(1rem, 2.2vw, 1.3rem);
+    color:var(--gold);
+    margin:14px 0 0 0;
+    min-height:1.6em;
+  }
+  .hero-type .cursor{
+    display:inline-block;
+    margin-left:2px;
+    color:var(--gold);
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{
+    0%, 49%{opacity:1;}
+    50%, 100%{opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-type .cursor{animation:none; opacity:1;}
+  }
+
+  .scroll-cue{
+    position:absolute; left:50%; bottom:26px; z-index:2;
+    transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:#C9D1E0;
+  }
+  .scroll-cue svg{width:16px; height:16px; animation:cueBounce 1.8s ease-in-out infinite;}
+  @keyframes cueBounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(6px);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .scroll-cue svg{animation:none;}
+  }
+
+  @media (max-width:600px){
+    .hero-inner{padding-bottom:44px;}
+  }
+
+
+  /* ---------- Sections ---------- */
+  section{padding:52px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .section-head{margin-bottom:32px;}
+  .section-head h2{font-size:clamp(1.9rem, 4vw, 2.6rem);}
+  .lede{
+    max-width:640px;
+    color:var(--slate);
+    font-size:1.02rem;
+  }
+
+  /* ---------- About ---------- */
+  .about-layout{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:56px;
+    align-items:start;
+  }
+  .about-photo-big{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    border-radius:4px;
+    box-shadow:0 0 0 1px var(--line);
+  }
+  .about-layout h2{margin-bottom:26px;}
+  .about-layout p{margin:0 0 16px 0; color:var(--ink);}
+  .about-layout p a{color:var(--navy); text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:2px;}
+  .about-layout p a:hover{text-decoration-color:var(--gold);}
+  .about-layout p:last-child{margin-bottom:0;}
+
+  .cv-button{
+    display:inline-block;
+    margin-top:28px;
+    padding:13px 26px;
+    background:var(--navy);
+    color:#fff;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    text-decoration:none;
+    border-radius:2px;
+  }
+  .cv-button:hover{background:var(--navy-2);}
+
+  .icon-links{
+    display:flex; gap:12px; flex-wrap:wrap;
+    margin-top:26px;
+  }
+  .icon-links a{
+    display:flex; align-items:center; justify-content:center;
+    width:42px; height:42px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--slate);
+    transition:color 0.15s ease, border-color 0.15s ease;
+  }
+  .icon-links a:hover, .icon-links a:focus-visible{
+    color:var(--navy);
+    border-color:var(--navy);
+  }
+  .icon-links svg{width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7;}
+
+  @media (max-width:760px){
+    .about-layout{grid-template-columns:1fr;}
+    .about-photo-big{max-width:280px;}
+  }
+
+  /* ---------- Experience ---------- */
+  .xp{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    gap:24px;
+    padding:22px 0;
+    border-top:1px solid var(--line);
+  }
+  .xp:first-of-type{border-top:none;}
+  .xp-meta{color:var(--slate-light); font-size:0.85rem; font-family:'IBM Plex Mono', monospace; line-height:1.5;}
+  .xp-role{font-family:'Fraunces', serif; font-size:1.15rem; color:var(--navy); font-weight:600; margin:0 0 2px 0;}
+  .xp-org{font-size:0.95rem; color:var(--slate); margin:0 0 12px 0;}
+  .xp-tags{margin:0 0 14px 0;}
+  .xp ul{margin:0; padding-left:18px; color:var(--ink);}
+  .xp li{margin-bottom:7px; font-size:0.95rem;}
+  .xp li:last-child{margin-bottom:0;}
+
+  @media (max-width:600px){
+    .xp{grid-template-columns:1fr; gap:6px;}
+  }
+
+  /* ---------- Projects ---------- */
+  .proj-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .proj-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+  }
+  .proj-card h3{font-size:1.08rem; margin-bottom:8px;}
+  .proj-card .stat{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .proj-card p{font-size:0.92rem; color:var(--slate); margin:0 0 14px 0; flex-grow:1;}
+  .proj-card .tags{margin-top:auto;}
+  .proj-card a.link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    text-decoration:none;
+    color:var(--navy);
+    border-bottom:1px solid var(--navy);
+    align-self:flex-start;
+  }
+
+  @media (max-width:680px){
+    .proj-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Skills ---------- */
+  .skill-row{display:flex; gap:16px; padding:14px 0; border-top:1px solid var(--line); align-items:baseline; flex-wrap:wrap;}
+  .skill-row:first-of-type{border-top:none;}
+  .skill-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--slate-light);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    width:150px;
+    flex-shrink:0;
+  }
+  .skill-vals{color:var(--ink); font-size:0.95rem; flex:1;}
+
+  /* ---------- Contact / footer ---------- */
+  footer{padding:56px 0 64px 0;}
+  .contact-card{
+    background:var(--navy);
+    color:#EFEEE8;
+    border-radius:8px;
+    padding:44px 40px;
+    text-align:left;
+  }
+  .contact-card h2{color:#fff; font-size:1.7rem; margin-bottom:10px;}
+  .contact-card p{color:#C9D1E0; max-width:480px; margin:0 0 22px 0;}
+  .contact-links{display:flex; gap:16px; flex-wrap:wrap;}
+  .contact-links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.85rem;
+    text-decoration:none;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.35);
+    padding:9px 16px;
+    border-radius:20px;
+  }
+  .contact-links a:hover{background:rgba(255,255,255,0.12);}
+  .foot-note{
+    text-align:center; margin-top:28px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.75rem; color:var(--slate-light);
+  }
+
+  @media (max-width:600px){
+    .contact-card{padding:32px 24px;}
+  }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold); outline-offset:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
 </head>
-  
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <!-- Your profile photo with a larger size -->
-            <img src="https://althea-yuquan-chen.github.io/photo_square.jpg" alt="Althea Yuquan Chen Profile Photo" class="profile-photo">
-            
-            <div class="header-text">
-                <h1>Althea (Yuquan) Chen</h1>
-                <p class="contact">📞 +1 412-475-6091 | ✉️ <a href="mailto:yuquanch@andrew.cmu.edu">yuquanch@andrew.cmu.edu</a><br></p>
-                <p><a href="https://www.linkedin.com/in/yuquan-althea-chen/" target="_blank" class="social-link" title="LinkedIn">LinkedIn</a>| <a href="https://cmu.joinhandshake.com/profiles/qqg5ke" target="_blank" class="social-link" title="Handshake">Handshake</a></p>
-            </div>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="https://www.linkedin.com/in/yuquan-althea-chen/" class="nav-cta" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-full" id="top">
+  <div class="hero-inner">
+    <h1>Yuquan Chen</h1>
+    <p class="hero-subtitle">AI Engineer — multi-agent systems that survive contact with real business constraints</p>
+    <p class="hero-type"><span id="typed-text"></span><span class="cursor" aria-hidden="true">|</span></p>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    Scroll
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ABOUT -->
+
+  <section id="about">
+    <div class="about-layout">
+      <img src="photo_square.jpg" alt="Portrait of Yuquan Chen" class="about-photo-big">
+      <div>
+        <h2>About</h2>
+        <p>I'm a Master's student at Carnegie Mellon University, studying Information Systems Management, graduating in December 2026.</p>
+        <p>I'm the AI Engineer at <a href="https://whelix.com/" target="_blank" rel="noopener"><strong>Whelix</strong></a>, a robotics startup working on cell culture automation, where I focus on building reliable AI agent systems. I designed and built their internal multi-agent operating system, and I'm now working on Willow — a protocol-generation agent embedded in their robot product. Willow turns a cell-culture goal into an executable plan, one that has to be biologically sound and physically feasible for the hardware to run.</p>
+        <p>Before that, I built LLM-powered tools at <a href="https://www.basf.com/cn/en" target="_blank" rel="noopener"><strong>BASF</strong></a> — using LLMs to improve production and management efficiency. At Nanjing University, I was part of <a href="https://cs.nju.edu.cn/lands/" target="_blank" rel="noopener">LANDS</a>, working under <a href="https://jzheng369.github.io/" target="_blank" rel="noopener">Jiaqi Zheng</a> on end-to-end optimization — my undergraduate thesis applied decision-focused learning and causal inference to reframe a classic uplift-modeling problem.</p>
+        <p>I'm looking at Applied AI Engineer roles and technical consulting for 2027 — work where I can take a system from demo to something that holds up under scrutiny.</p>
+
+        <a href="Yuquan_Chen_Resume.pdf" class="cv-button" target="_blank" rel="noopener">Download CV</a>
+
+        <div class="icon-links">
+          <a href="mailto:yuquanch@andrew.cmu.edu" aria-label="Email">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/yuquan-althea-chen/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="7.5" y1="10" x2="7.5" y2="17"/><circle cx="7.5" cy="6.8" r="0.6" fill="currentColor" stroke="none"/><path d="M11.5 17v-4.2c0-1.5 1-2.3 2.2-2.3 1.2 0 2 .8 2 2.3V17" stroke-linecap="round"/><line x1="11.5" y1="10" x2="11.5" y2="17"/></svg>
+          </a>
+          <a href="https://github.com/althea-yuquan-chen" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-2.85 17.54c.45.08.61-.2.61-.43v-1.68c-2.5.55-3.03-1.2-3.03-1.2-.41-1.04-1-1.32-1-1.32-.82-.56.06-.55.06-.55.9.06 1.38.93 1.38.93.8 1.38 2.1.98 2.62.75.08-.58.32-.98.57-1.2-2-.23-4.1-1-4.1-4.44 0-.98.35-1.78.93-2.4-.1-.23-.4-1.15.09-2.4 0 0 .76-.24 2.5.92a8.6 8.6 0 0 1 4.55 0c1.73-1.16 2.5-.92 2.5-.92.48 1.25.18 2.17.09 2.4.58.62.93 1.42.93 2.4 0 3.45-2.1 4.2-4.1 4.43.33.29.62.85.62 1.72v2.55c0 .24.16.52.62.43A9 9 0 0 0 12 3z"/></svg>
+          </a>
+          <a href="https://cmu.joinhandshake.com/profiles/qqg5ke" target="_blank" rel="noopener" aria-label="Handshake">
+            <svg viewBox="0 0 24 24"><rect x="2" y="9" width="4" height="7" rx="1"/><rect x="18" y="9" width="4" height="7" rx="1"/><path d="M6 11l4.2-2.4a2 2 0 0 1 2.1.1L15 10.5"/><path d="M15 10.5l1.6 1.1a1.3 1.3 0 0 1-1.5 2.1L13 12.2"/><path d="M13 12.2l1 .7a1.3 1.3 0 0 1-1.5 2.1l-1.8-1.2"/><path d="M6 14.5l2.3 1.6a1.5 1.5 0 0 0 2-.3"/></svg>
+          </a>
         </div>
-    </header>
-
-  <main class="container">
-
-    <!-- Education -->
-    <section id="education">
-      <h2>Education</h2>
-      <div class="item">
-        <h5>Carnegie Mellon University, Pittsburgh, USA</h5>
-        <p><em>Master’s in Information System Management – Business Intelligence & Data Analytics</em> (Aug. 2025 – Dec. 2026 expected)</p>
-        <p style="margin-left: 20px;"><strong>Core Courses:</strong> Machine Learning for Problem Solving, Advanced Business Analytics, Applied Econometrics, Unstructured Data Analytics, Distributed Systems for ISM, Database Management, Economic Analysis, Accounting and Finance Analytics</p>
       </div>
-      <div class="item">
-        <h5>Nanjing University, Nanjing, China</h5>
-        <p><em>Bachelor’s in Information Management and Information System</em> (Sept. 2021 – Jun. 2025)</p>
-        <p style="margin-left: 20px;"><strong>Core Courses:</strong> Probability and Statistics, Python, Data Structures, Computer Networks, R Data Analysis, Databases, Machine Learning & Deep Learning, NLP, Image Processing</p>
-        <p style="margin-left: 20px;"><strong>Honors:</strong> People’s Scholarship (2022 & 2023)</p>
-        <p style="margin-left: 20px;"><strong>Research:</strong> Assistant to <a href="https://jzheng369.github.io/">Dr. Jiaqi Zheng</a>, decision-focused learning & online optimization</p>
-        <p style="margin-left: 20px;"><strong>Graduation Paper:</strong> Decision-Focused Uplift Modeling for AUUC Maximization</p>
-      </div>
-      <div class="item">
-        <h5>International Elite Mentorship Program, Neoscholar Education, Nanjing</h5>
-        <p><em>Algorithms for Big Data</em> (Jul. 2023 – Aug. 2023) | Grade: A+ under <a href="https://www.cs.cmu.edu/~dwoodruf/">Prof. David Woodruff</a></p>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Skills -->
-    <section id="skills">
-      <h2>Skills & Research Interests</h2>
-      <ul>
-        <li><strong>Computer Skills:</strong> Python, SQL, R, Java, Power BI, KNIME, Microsoft Office Suite</li>
-        <li><strong>Languages:</strong> Mandarin (Native), English (Fluent), Spanish (Basic)</li>
-        <li><strong>Research Interests:</strong> Causal Inference, Optimization, Machine Learning, Data Analysis in real world senarios</li>
-      </ul>
-    </section>
-      
-    <!-- Publications -->
-    <section id="publications">
-      <h2>Publications</h2>
-      <div class="item">
-        <p>Chen,Y. (2024), <em>Analysis and Prediction of Factors Influencing the Hotness of Weibo Trending Keywords</em>, Applied and Computational Engineering,55,110-119.</p>
-      </div>
-    </section>
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-head">
+      <p class="eyebrow">Experience</p>
+      <h2>Where I've shipped things</h2>
+    </div>
 
-    <!-- Professional Experience -->
-    <section id="experience">
-      <h2>Main Projects</h2>
-      <div class="item">
-        <h5>11th CCF Big Data & Computing Intelligence Contest, Guangzhou, China</h5>
-        <p><em>Team Leader</em> (Oct. 2023 – Dec. 2023)</p>
+    <div class="xp">
+      <div class="xp-meta">May 2026 — Present<br>Boston, MA · Hybrid</div>
+      <div>
+        <p class="xp-role">AI Engineer Intern</p>
+        <p class="xp-org">Whelix</p>
+        <p class="xp-tags">
+          <span class="tag">LangGraph</span>
+          <span class="tag">RAG</span>
+          <span class="tag">Multi-Agent Systems</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Google Cloud Run</span>
+        </p>
         <ul>
-          <li>Developed intelligent decision-making system for inventory optimization</li>
-          <li>Led data cleaning, modeling, and prediction improvements</li>
-          <li>Won <strong>Second Prize (Top 3 out of 1557)</strong></li>
+          <li>Own AI system design end-to-end at an early-stage robotics startup — from architecture through production deployment — as the company's first and only AI engineer.</li>
+          <li>Build and scale the multi-agent infrastructure that runs day-to-day operations across sales, fundraising, and engineering.</li>
+          <li>Build the knowledge infrastructure the agents run on — an LLM-readable wiki that unifies the company's fragmented documentation into one system of record.</li>
+          <li>Improved the reliability of Willow, a protocol generation agent, by designing a 4-stage validation pipeline that catches physically/biologically invalid LLM output before it reaches the robot — reducing reliance on model correctness alone.</li>
+          <li>Partner directly with the CEO to turn ambiguous priorities into shipped, dependable systems, and to define what "production-ready AI" means for the company going forward.</li>
         </ul>
       </div>
-      <div class="item">
-        <h5>Model Prediction of Weibo Search Popularity Project, Nanjing, China</h5>
-        <p><em>Independent</em> (Jul. 2023 – Aug. 2023)</p>
-        <p>Built crawler for Weibo hot searches, performed analysis in R, created neural network model, and published paper as sole author.</p>
-      </div>
-    </section>
+    </div>
 
-    <!-- Work Experience -->
-    <section id="work">
-      <h2>Work Experience</h2>
-      <div class="item">
-        <h5>BASF Polyurethane Specialties (China) Co., Ltd, Shanghai</h5>
-        <p><em>Digitalization Intern, BASF Monomers Asia Pacific</em> (May 2024 – Feb. 2025)</p>
-        <p>Providing end-to-end digitalization services for the Business Unit, covering production, market forecasting, EHS, supply chain, pricing, and business analysis using Python, KNIME and Power BI. Main projects I leaded/ enrolled in:</p>
+    <div class="xp">
+      <div class="xp-meta">Jun 2024 — Feb 2025<br>Shanghai, China · On-site</div>
+      <div>
+        <p class="xp-role">Digitalization Intern, Asia-Pacific</p>
+        <p class="xp-org">BASF</p>
+        <p class="xp-tags">
+          <span class="tag">Python</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">KNIME</span>
+          <span class="tag">LLM APIs</span>
+        </p>
         <ul>
-          <li>LLM-based demand forecasting & automated reporting</li>
-          <li>Developed digital inspection system for 4 plants across Asia-Pacific</li>
-          <li>Centralized multilingual Technical Data Sheets, improving the consistency and timely updates for the same products in different plants and regions</li>
-          <li>Built spare parts sharing system across plants, enhancing supply chain resilience</li>
-          <li>Automated daily/monthly ICTP data updates using WebDriver and data processing on Python for accurate, real-time analysis</li>
-          <li>Enhanced sales dashboards in Power BI, offering insights across regions, customers and industries</li>
+          <li>Own digitalization initiatives across an entire business unit — production, market forecasting, supply chain, pricing, and EHS — translating ambiguous needs from both technical and non-technical stakeholders into shipped, data-driven tools.</li>
+          <li>Lead or contribute to 10+ projects end-to-end, from requirements gathering on the factory floor to rollout across Asia-Pacific plants.</li>
+          <li>Build the automated forecasting and reporting infrastructure that feeds VP-level pricing decisions, replacing manual analysis with a reliable weekly cadence.</li>
+          <li>Drive adoption on the ground — regularly on-site at chemical plants, working directly with operators to make sure what got built actually matched how the work happened.</li>
         </ul>
       </div>
-      <div class="item">
-        <h5>Shanghai Baosight Software Co., Ltd – Institute of Industrial Internet Research, Shanghai</h5>
-        <p><em>Intern, Big Data Department</em> (Jan. 2024 – Feb. 2024)</p>
-        <p>Led the "Cold Rolling Super Platform" project: Developed user-friendly one-click data queries and statistical services on the front-end; Improved operational efficiency by optimizing the decision-making process</p>
+    </div>
+
+    <div class="xp">
+      <div class="xp-meta">Sep 2023 — Jun 2025<br>Nanjing, China · Part-time</div>
+      <div>
+        <p class="xp-role">Research Assistant</p>
+        <p class="xp-org">Nanjing University</p>
+        <p class="xp-tags">
+          <span class="tag">Causal Inference</span>
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Statistics</span>
+          <span class="tag">Decision-Focused Learning</span>
+          <span class="tag">Optimization</span>
+          <span class="tag">PyTorch</span>
+        </p>
         <ul>
-          <li>Cleaned DB2 contract/production data with SQLAlchemy</li>
-          <li>Built decision tree and random forest models for feature selection and extraction of feature importance</li>
+          <li>Co-authored a survey on decision-focused learning, drafting the introduction and benchmark sections and framing 100+ papers into a unified taxonomy.</li>
+          <li>Conceived and implemented Decision-Focused Uplift Modeling, a novel algorithm embedding decision-focused objectives directly into uplift estimation — a 3% AUUC improvement over baselines on the Criteo causal-inference benchmark.</li>
+          <li>Delivered weekly literature briefings to a 15-member lab group on decision-focused learning and causal inference.</li>
         </ul>
       </div>
-    </section>
+    </div>
 
-    <!-- Extracurricular -->
-    <section id="activities">
-      <h2>Extracurricular Activities</h2>
-      <div class="item">
-        <h5>Media Center, Undergraduate Admissions Office, Nanjing University</h5>
-        <p><em>Producer (Sep. 2021 – Jun. 2023)</em></p>
-        <p>Produced videos for NJU official Bilibili account (60k followers, 30k+ views).</p>
+    <div class="xp">
+      <div class="xp-meta">Jan 2024 — Feb 2024<br>Shanghai, China · On-site</div>
+      <div>
+        <p class="xp-role">Project Intern</p>
+        <p class="xp-org">Shanghai Baosight Software</p>
+        <p class="xp-tags">
+          <span class="tag">ETL</span>
+          <span class="tag">Data Analysis</span>
+          <span class="tag">Data Modeling</span>
+        </p>
         <ul>
-            <li>Planned, directed, and produced video content showcasing student life; maintained regular updates on the NJU official account with 60,000 followers</li>
-            <li>Served as executive producer for 10 videos with nearly 30,000 views and as a lead actor in the campus life short drama (4 episodes), which received more than 20,000 views</li>
+          <li>Built a one-click data query and statistics system with Python and SQLAlchemy, cleaning and structuring historical contract and production data from DB2.</li>
+          <li>Built decision tree and random forest models to extract feature importance and classification rules from historical production data.</li>
         </ul>
       </div>
-      <div class="item">
-        <h5>Web3 Beginner-Friendly Public Science Camp</h5>
-        <p><em>Head of Community Operations (Feb. 2023 – Apr. 2023)</em></p>
-        <ul>
-            <li>Took charge of daily community operation and maintenance, course scheduling, and activity planning </li>
-            <li>Completed two rounds of science popularization of Web3 concepts, reaching over 200 people</li>
-        </ul>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-head">
+      <p class="eyebrow">Projects</p>
+      <h2>Things I've built end to end</h2>
+    </div>
+    <div class="proj-grid">
+
+      <div class="proj-card">
+        <h3>Decision-Focused Uplift Modeling</h3>
+        <p class="stat">Criteo ad-uplift benchmark · ~3% AUUC gain</p>
+        <p>Traditional uplift models optimize prediction accuracy, not the ranking decision that's actually deployed. DFUM relaxes the budget-constrained top-k allocation into a differentiable objective, closing the gap between what the model is trained on and what it's used for.</p>
+        <div class="tags">
+          <span class="tag">Causal Inference</span>
+          <span class="tag">Optimization</span>
+        </div>
+        <a class="link" href="https://github.com/althea-yuquan-chen/Decision-Focused-Uplift-Modeling" target="_blank" rel="noopener">View repo →</a>
       </div>
-    </section>
 
-  </main>
+      <div class="proj-card">
+        <h3>CCF Big Data & Computing Intelligence Contest</h3>
+        <p class="stat">2nd place · 1,557 teams</p>
+        <p>Led a team building an intelligent decision-making system for omnichannel fresh-grocery inventory optimization — demand modeling, data cleaning pipeline, and prediction improvements under a live leaderboard.</p>
+        <div class="tags">
+          <span class="tag">Team Lead</span>
+          <span class="tag">Forecasting</span>
+        </div>
+      </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Yuquan Chen | Built with ❤️ and GitHub Pages</p>
+      <div class="proj-card">
+        <h3>PromptPrompt</h3>
+        <p class="stat">CLI tool · CMU course project</p>
+        <p>A command-line prompt optimizer that acts as a consultant — asks clarifying questions, rewrites vague ideas into engineered prompts, and launches the refined version directly in your browser or local AI tools. I handled API integration, user authentication design, and cross-module debugging.</p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">LLM APIs</span>
+        </div>
+        <a class="link" href="https://github.com/althea-yuquan-chen/Promptprompt" target="_blank" rel="noopener">View repo →</a>
+      </div>
+
+      <div class="proj-card">
+        <h3>Willow</h3>
+        <p class="stat">Protocol-generation agent · Whelix</p>
+        <p>An agent that turns a cell-culture goal into a plan the robot can execute — where a plausible-sounding output isn't good enough. Designed a 4-stage validation pipeline that catches biologically or physically invalid steps before they ever reach the hardware, cutting reliance on the model getting it right on its own.</p>
+        <div class="tags">
+          <span class="tag">LLM Reliability</span>
+          <span class="tag">Physical AI</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-head">
+      <p class="eyebrow">Skills</p>
+      <h2>Toolkit</h2>
+    </div>
+
+    <div class="skill-row">
+      <div class="skill-label">Languages</div>
+      <div class="skill-vals">Python · SQL · R · Java</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-label">AI / ML</div>
+      <div class="skill-vals">LLM & Agent Systems · Tool-Calling & Multi-Agent Architecture · Causal Inference · Optimization</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-label">Data & BI</div>
+      <div class="skill-vals">KNIME · Power BI · Data Pipelines</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-label">Platforms</div>
+      <div class="skill-vals">Google Cloud Run · GitHub Actions · Docker</div>
+    </div>
+    <div class="skill-row">
+      <div class="skill-label">Spoken</div>
+      <div class="skill-vals">Mandarin (Native) · English (Fluent) · Spanish (Elementary)</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <footer id="contact">
+    <p class="eyebrow">Contact</p>
+    <div class="contact-card">
+      <h2>Let's talk</h2>
+      <p>Finishing my MISM at CMU in December 2026 — looking at Applied AI Engineer roles and technical consulting for 2027. Happy to talk shop about multi-agent architecture, decision-focused learning, or anything in between.</p>
+      <div class="contact-links">
+        <a href="mailto:yuquanch@andrew.cmu.edu">Email</a>
+        <a href="https://www.linkedin.com/in/yuquan-althea-chen/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/althea-yuquan-chen" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <p class="foot-note">© 2026 Yuquan Chen · Pittsburgh, PA</p>
   </footer>
 
+</div>
+
+<script>
+(function(){
+  var phrases = [
+    "AI Engineer — multi-agent systems.",
+    "Builds AI that survives real usage.",
+    "Decision-focused ML researcher.",
+    "MISM '26 @ Carnegie Mellon."
+  ];
+  var el = document.getElementById('typed-text');
+  if(!el) return;
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion){
+    el.textContent = phrases[0];
+    return;
+  }
+
+  var phraseIndex = 0, charIndex = 0, deleting = false;
+  var typeSpeed = 55, deleteSpeed = 30, holdTime = 1400, gapTime = 400;
+
+  function tick(){
+    var current = phrases[phraseIndex];
+
+    if(!deleting){
+      charIndex++;
+      el.textContent = current.slice(0, charIndex);
+      if(charIndex === current.length){
+        deleting = true;
+        setTimeout(tick, holdTime);
+        return;
+      }
+      setTimeout(tick, typeSpeed);
+    } else {
+      charIndex--;
+      el.textContent = current.slice(0, charIndex);
+      if(charIndex === 0){
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        setTimeout(tick, gapTime);
+        return;
+      }
+      setTimeout(tick, deleteSpeed);
+    }
+  }
+
+  tick();
+})();
+</script>
 </body>
 </html>
