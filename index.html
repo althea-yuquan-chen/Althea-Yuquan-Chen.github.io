@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yuquan Chen — AI Engineer</title>
-<meta name="description" content="Yuquan Chen — AI Engineer. Building production multi-agent systems, physics-grounded simulation, and applied ML.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Yuquan Chen — AI Engineer</title>
+<meta name="description" content="Yuquan Chen — AI Engineer. Building production multi-agent systems, physics-grounded simulation, and applied ML.">
 <style>
   :root{
-    --ink:        #17233F;
-    --navy:       #1C3964;
-    --navy-2:     #223E75;
-    --slate:      #57607A;
-    --slate-light:#8A93AA;
-    --bg:         #F7F6F2;
+    --ink:        #222222;
+    --navy:       #0C6DBD;
+    --navy-2:     #004777;
+    --slate:      #484848;
+    --slate-light:#8A8A8A;
+    --bg:         #FFFFFF;
     --panel:      #FFFFFF;
-    --line:       #E4E1D8;
-    --gold:       #B8843C;
-    --gold-soft:  #F2E6D1;
+    --line:       #E3E3E3;
+    --gold:       #0C6DBD;
+    --gold-soft:  #E6F0FA;
     --radius:     2px;
   }
 
@@ -29,7 +29,7 @@
     margin:0;
     background:var(--bg);
     color:var(--ink);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:16px;
     line-height:1.65;
     -webkit-font-smoothing:antialiased;
@@ -41,15 +41,15 @@
   .wrap{max-width:1680px; margin:0 auto; padding:0 clamp(24px, 10vw, 190px);}
 
   h1,h2,h3{
-    font-family:'Fraunces', Georgia, serif;
+    font-family:'Raleway', 'Helvetica Neue', Arial, sans-serif;
     font-weight:600;
     letter-spacing:-0.01em;
     margin:0;
-    color:var(--navy);
+    color:var(--ink);
   }
 
   .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.72rem;
     letter-spacing:0.12em;
     text-transform:uppercase;
@@ -60,7 +60,7 @@
 
   .tag{
     display:inline-block;
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.72rem;
     padding:4px 10px;
     border:1px solid var(--line);
@@ -87,7 +87,7 @@
   }
   .nav-links a:hover, .nav-links a:focus-visible{opacity:0.6;}
   .nav-cta{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.78rem;
     padding:7px 14px;
     border:1px solid #fff;
@@ -122,7 +122,7 @@
   }
   .hero-eyebrow{
     display:flex; align-items:center; gap:10px;
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.8rem; color:#C9D1E0;
     margin:0 0 14px 0;
   }
@@ -131,17 +131,17 @@
     font-size:clamp(3.4rem, 11vw, 9rem);
     line-height:0.9;
     letter-spacing:-0.02em;
-    color:#F7F6F2;
+    color:#FFFFFF;
   }
   .hero-subtitle{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:clamp(0.95rem, 2vw, 1.15rem);
     color:#C9D1E0;
     margin:22px 0 0 0;
     max-width:560px;
   }
   .hero-type{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:clamp(1rem, 2.2vw, 1.3rem);
     color:var(--gold);
     margin:14px 0 0 0;
@@ -165,7 +165,7 @@
     position:absolute; left:50%; bottom:26px; z-index:2;
     transform:translateX(-50%);
     display:flex; flex-direction:column; align-items:center; gap:6px;
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase;
     color:#C9D1E0;
   }
@@ -220,7 +220,7 @@
     padding:13px 26px;
     background:var(--navy);
     color:#fff;
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.78rem;
     letter-spacing:0.08em;
     text-transform:uppercase;
@@ -262,8 +262,8 @@
     border-top:1px solid var(--line);
   }
   .xp:first-of-type{border-top:none;}
-  .xp-meta{color:var(--slate-light); font-size:0.85rem; font-family:'IBM Plex Mono', monospace; line-height:1.5;}
-  .xp-role{font-family:'Fraunces', serif; font-size:1.15rem; color:var(--navy); font-weight:600; margin:0 0 2px 0;}
+  .xp-meta{color:var(--slate-light); font-size:0.85rem; font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; line-height:1.5;}
+  .xp-role{font-family:'Raleway', 'Helvetica Neue', Arial, sans-serif; font-size:1.15rem; color:var(--ink); font-weight:600; margin:0 0 2px 0;}
   .xp-org{font-size:0.95rem; color:var(--slate); margin:0 0 12px 0;}
   .xp-tags{margin:0 0 14px 0;}
   .xp ul{margin:0; padding-left:18px; color:var(--ink);}
@@ -290,7 +290,7 @@
   }
   .proj-card h3{font-size:1.08rem; margin-bottom:8px;}
   .proj-card .stat{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.78rem;
     color:var(--gold);
     margin-bottom:10px;
@@ -298,7 +298,7 @@
   .proj-card p{font-size:0.92rem; color:var(--slate); margin:0 0 14px 0; flex-grow:1;}
   .proj-card .tags{margin-top:auto;}
   .proj-card a.link{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.78rem;
     text-decoration:none;
     color:var(--navy);
@@ -314,7 +314,7 @@
   .skill-row{display:flex; gap:16px; padding:14px 0; border-top:1px solid var(--line); align-items:baseline; flex-wrap:wrap;}
   .skill-row:first-of-type{border-top:none;}
   .skill-label{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.78rem;
     color:var(--slate-light);
     text-transform:uppercase;
@@ -337,7 +337,7 @@
   .contact-card p{color:#C9D1E0; max-width:480px; margin:0 0 22px 0;}
   .contact-links{display:flex; gap:16px; flex-wrap:wrap;}
   .contact-links a{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.85rem;
     text-decoration:none;
     color:#fff;
@@ -348,7 +348,7 @@
   .contact-links a:hover{background:rgba(255,255,255,0.12);}
   .foot-note{
     text-align:center; margin-top:28px;
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.75rem; color:var(--slate-light);
   }
 
@@ -503,13 +503,14 @@
 
       <div class="proj-card">
         <h3>NVIDIA Video-to-Data Challenge</h3>
-        <p class="stat">Track 2 · Robotic Grounding · 3rd of 19 teams on Tier 3 single-path success</p>
-        <p>Robots can learn manipulation from human video only if the reconstruction holds up. On a team I formed, I owned the Tier 3 entry, which starts from a single third-person video: Grounding DINO and SAM 2 segmentation, MoGe depth, FoundationPose object registration, and SOMA body fitting. A symmetry-aware Viterbi search picks one consistent object pose path through each clip, support surfaces come from the object's own static segments, and a guard keeps the pipeline from ever reading lower-tier ground truth.</p>
+        <p class="stat">3rd / 19 teams · success 0.27 → 0.47 · error 55 → 37 cm · 30/30 physics checks</p>
+        <p>Turned a single third-person video into robot training data: I owned 4D human–object reconstruction for the video-only tier, with no clean ground truth to lean on. The work that mattered was making it trustworthy — a timeline search that stops objects from flipping, depth fixed along the camera's line of sight, support surfaces inferred from the objects themselves, and rules enforced in code.</p>
         <div class="tags">
           <span class="tag">4D Reconstruction</span>
           <span class="tag">Robotics</span>
+          <span class="tag">Reliability</span>
         </div>
-        <a class="link" href="https://github.com/Manifold-ai/maniphys_lab_v2d_challenge/blob/track2/p1-training/docs/report/v2d-track2-technical-report.pdf" target="_blank" rel="noopener">Read the report →</a>
+        <a class="link" href="v2d.html">Read the write-up →</a>
       </div>
 
       <div class="proj-card">

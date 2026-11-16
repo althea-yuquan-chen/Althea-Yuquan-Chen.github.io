@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<title>One Video to Robot Data — Yuquan Chen</title>
+<meta name="description" content="How I reconstructed 4D human–object motion from a single video for the NVIDIA Video-to-Data Challenge, and what it took to make the reconstructions trustworthy enough to train robots on.">
+<style>
+  :root{
+    --ink:#222222; --navy:#0C6DBD; --slate:#484848; --slate-light:#8A8A8A;
+    --bg:#FFFFFF; --panel:#FFFFFF; --line:#E3E3E3; --gold:#0C6DBD; --gold-soft:#E6F0FA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy);}
+  ::selection{background:var(--gold-soft); color:var(--navy);}
+  .article{max-width:720px; margin:0 auto; padding:56px 20px 96px;}
+  .back{
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.8rem; text-decoration:none;
+    color:var(--slate); border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.72rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--slate-light); margin:40px 0 10px;
+  }
+  h1,h2{font-family:'Raleway', 'Helvetica Neue', Arial, sans-serif; font-weight:600; color:var(--ink); letter-spacing:-0.01em;}
+  h1{font-size:clamp(1.9rem,4.5vw,2.6rem); line-height:1.15; margin:0 0 16px;}
+  h2{font-size:1.35rem; margin:44px 0 10px;}
+  .lede{font-size:1.08rem; color:var(--slate); margin:0 0 28px;}
+  p{margin:0 0 16px;}
+  ul{margin:0 0 16px; padding-left:22px;}
+  li{margin-bottom:6px;}
+  code{font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.86em; background:var(--panel); border:1px solid var(--line); padding:1px 5px; border-radius:3px;}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:8px 0 32px;}
+  .stat{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:14px 14px 12px;}
+  .stat b{display:block; font-family:'Raleway', 'Helvetica Neue', Arial, sans-serif; font-size:1.35rem; color:var(--navy); line-height:1.2;}
+  .stat span{display:block; line-height:1.4; margin-top:4px;font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.72rem; color:var(--slate);}
+  .note{background:var(--panel); border-left:3px solid var(--gold); padding:14px 18px; margin:20px 0; color:var(--slate); font-size:0.95rem;}
+  table{width:100%; border-collapse:collapse; margin:8px 0 20px; font-size:0.92rem; background:var(--panel);}
+  th,td{text-align:left; padding:9px 12px; border:1px solid var(--line);}
+  th{font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.75rem; color:var(--slate); font-weight:500;}
+  .foot{margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:0.9rem; color:var(--slate);}
+  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+<main class="article">
+
+  <a class="back" href="index.html#projects">← Yuquan Chen</a>
+
+  <p class="eyebrow">NVIDIA Video-to-Data Challenge · Track 2: Robotic Grounding · Fall 2026</p>
+  <h1>Turning one video into robot training data</h1>
+  <p class="lede">Robots could learn manipulation from the videos people already record, but only if we can recover what actually happened in them. In the NVIDIA Video-to-Data Challenge I owned the hardest version of that problem: reconstructing a person and the object they handle from a single camera, with no clean ground truth, well enough to train a humanoid on it.</p>
+
+  <div class="stats">
+    <div class="stat"><b>3rd / 19</b><span>teams, video-only tier success rate</span></div>
+    <div class="stat"><b>0.27 → 0.47</b><span>success rate on the board</span></div>
+    <div class="stat"><b>55 → 37 cm</b><span>mean position error</span></div>
+    <div class="stat"><b>30 / 30</b><span>episodes pass the physics check</span></div>
+  </div>
+
+  <h2>The problem</h2>
+  <p>Track 2 asks for one simulated robot policy per episode: a G1 humanoid with Dex3 hands has to reproduce what a person did with an object. There are 30 episodes, and three input tiers. Tier 1 gives clean multi-view trajectories, Tier 2 gives the same trajectories with synthetic corruption, and Tier 3, the one I worked on, gives only a single third-person video of each episode. Every tier is scored against the same clean reference, so on Tier 3 every reconstruction error flows straight into what the robot learns.</p>
+  <p>The rules shaped the whole design. We could use only the video, the official object mesh and the floor plane; no trajectory from the cleaner tiers, no released support surfaces (they sit under each clean resting pose, so they leak where objects end up), and no manual labelling of test data. I wrote these limits into the code rather than a README: a guard blocks any read from lower-tier paths, symlinks included, and the floor file has exactly one entry point. Two readings of the rules we never asked the organizers about, using the official mesh and reading the floor plane from a lower-tier folder, are written down as open questions instead of being quietly assumed.</p>
+
+  <h2>The pipeline</h2>
+  <p>Each video goes through segmentation (Grounding DINO picks prompt frames, SAM 2 tracks the person and the object), then CARI4D: MoGe depth, FoundationPose object registration with around 200 pose candidates per frame, a joint human–object refinement, and SOMA body fitting. After that come the steps that turned out to matter most: putting everything in a consistent world frame, fixing depth, cleaning up the physics, and checking each frame before anything reaches training.</p>
+  <p>The first surprise was upstream of all of it. Picking the object by its text label chose the wrong thing whenever similar objects were in view: a tripod instead of the vacuum in one clip, a distant monitor in another. The fix used a fact the label never sees: the object a person is carrying is the one that moves. Detections are linked into tracks, and if any track is displaced, only displaced tracks are eligible. After that all 30 masks passed their checks.</p>
+
+  <h2>Failure one: objects that float, sink and drift</h2>
+  <p>The first reconstructions looked plausible on screen and were useless in simulation. Objects on the floor floated 11–22 cm above it, further away floated higher, and in the robot's reference untouched objects drifted, jittered and flipped. Policies trained on that reference scored zero multi-path success on all five episodes we tried.</p>
+  <p>Three changes fixed most of it:</p>
+  <ul>
+    <li><b>Correct depth along the line of sight, not vertically.</b> A single camera gets direction right and distance wrong (about 1.7% of depth). Snapping objects straight down to the floor pushed a third of frames off the image; moving them along each frame's own viewing ray keeps them where the camera saw them. Silhouette overlap went from 0.737 back to 0.807.</li>
+    <li><b>Clean up dynamics without inventing motion.</b> A checker labels every frame as touched, supported or floating, then flags jumps, drift and impossible accelerations. The fixer only touches the object: it resolves symmetric orientations, locks untouched resting segments to one pose, and blends corrections in and out around contact. An assertion keeps every corrected frame within 40° of the original. Violating frames fell from 6,207 to 1,779 across versions.</li>
+    <li><b>Infer where objects rest from the objects themselves.</b> Without the released support surfaces, an object on a table looks like it is floating. Static segments off the floor become support candidates, MoGe only confirms that a surface exists beneath, and the height comes from the object. A vacuum leaning on a bar stool gets a small collision box where it leans. With our supports every episode passes the pre-training physics gate; checked against the floor alone, only 25 of 30 do.</li>
+  </ul>
+
+  <h2>Failure two: objects that flip</h2>
+  <p>The hardest bug was orientation. A baseball bat would turn end over end at frames 313, 509 and 669; a mug would flip upside down mid-clip. Single frames simply do not contain enough information: the object covers 1,200–4,200 pixels, and the parts that decide orientation, like a mug handle, are often under a hand. I tried a Kalman filter (it locks onto the wrong side), FoundationPose's own scoring network (16 candidates nearly tied), hand geometry (too weak) and zero-shot image features (close to chance).</p>
+  <p>What worked was changing the question. FoundationPose's candidate pool already contains the right orientation in almost every frame, so the problem becomes picking one sensible path through the whole clip. A Viterbi search scores each candidate on FoundationPose's own confidence and how well its silhouette matches the mask, and penalizes rotation and translation between frames, taking object symmetry into account.</p>
+  <p>The first pilot fixed the bat and broke the mug: in the mug's opening still segment the right answer was ranked second, and the search overrode it on a tiny score gap. No reweighting could fix that, because the wrong path was cheaper on every term. So I added an anchor: keep FoundationPose's own choice unless the whole timeline clearly prefers another orientation. The anchor's weight was chosen by a pre-registered A/B test over five values on three episodes, judged by an automatic metric fixed before the runs; hand-checked answer frames were used only to accept the winner, never to tune it.</p>
+
+  <h2>Knowing when to trust a reconstruction</h2>
+  <p>Every version I delivered to training came with a report generated from result files, never hand-copied numbers, plus a 13-item checklist covering data contracts, frame-by-frame image alignment, dynamics, hand–object contact and provenance. A new version shipped only if no registered gate got worse and a batch visual review found old-right, new-wrong frames in under 10% of cases.</p>
+  <p>I also added a per-frame confidence label: 94.1% of frames are <code>ok</code>, 1.2% <code>unverified</code> and 4.7% <code>bad</code>. Against 74 human-judged frames, none of the correct frames was marked bad. The label has a blind spot I documented rather than hid: <code>ok</code> means the position matches the image, not that the orientation is right.</p>
+
+  <h2>Results</h2>
+  <p>Our team's counted Tier 3 entry placed 3rd of 19 teams on single-path success rate (0.467). Across the competition our board scores went from 0.27 to 0.47 success rate and from 55 cm to 37 cm mean position error. That gain is shared: it came from later versions of my reconstructions together with Rongxuan's frame-0 alignment and per-episode policy replacements, and the team report does not separate the two effects.</p>
+  <table>
+    <tr><th>Tier 3 board</th><th>Our score</th><th>Rank</th></tr>
+    <tr><td>Single-path success rate</td><td>0.467</td><td>3 / 19</td></tr>
+    <tr><td>Area under the ADD curve</td><td>0.282</td><td>counted file</td></tr>
+    <tr><td>Mean position error</td><td>36.6 cm</td><td>7 / 19</td></tr>
+  </table>
+  <p>Several episodes still fail, mostly where the reference object turns before anyone touches it or starts high on a surface and falls in simulation. Selection also used scores against our own reconstruction, which overstate gains on Tier 3. These are listed in the team report.</p>
+
+  <h2>What I'd keep</h2>
+  <ul>
+    <li><b>Put the rules in code.</b> A guard that fails loudly beats a policy everyone has to remember.</li>
+    <li><b>Look for information outside the single frame.</b> Motion picked the right object; the whole timeline picked the right orientation.</li>
+    <li><b>Decide how you will judge a change before you run it.</b> Pre-registered metrics kept a small dataset from fooling us.</li>
+    <li><b>Ship with a confidence signal, and say what it can't see.</b></li>
+  </ul>
+
+  <div class="foot">
+    <p><b>Team.</b> Maniphys Lab, five registered members. Rongxuan Zhou led policy training, retargeting, frame-0 alignment and the submission, wrote the team's <a href="https://github.com/Manifold-ai/maniphys_lab_v2d_challenge/blob/track2/p1-training/docs/report/v2d-track2-technical-report.pdf" target="_blank" rel="noopener">technical report</a>. Yudong Tao advised throughout. I built the Tier 3 reconstruction pipeline and the reconstruction versions behind our final Tier 3 submission.</p>
+    <p>Leaderboard figures are from the Kaggle final standings. <a href="https://nvidia-isaac.github.io/video_to_data/v2d_challenge/" target="_blank" rel="noopener">About the challenge</a>.</p>
+  </div>
+
+</main>
+</body>
+</html>
