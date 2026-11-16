@@ -502,6 +502,17 @@
     <div class="proj-grid">
 
       <div class="proj-card">
+        <h3>NVIDIA Video-to-Data Challenge</h3>
+        <p class="stat">Track 2 · Robotic Grounding · 3rd of 19 teams on Tier 3 single-path success</p>
+        <p>Robots can learn manipulation from human video only if the reconstruction holds up. On a team I formed, I owned the Tier 3 entry, which starts from a single third-person video: Grounding DINO and SAM 2 segmentation, MoGe depth, FoundationPose object registration, and SOMA body fitting. A symmetry-aware Viterbi search picks one consistent object pose path through each clip, support surfaces come from the object's own static segments, and a guard keeps the pipeline from ever reading lower-tier ground truth.</p>
+        <div class="tags">
+          <span class="tag">4D Reconstruction</span>
+          <span class="tag">Robotics</span>
+        </div>
+        <a class="link" href="https://github.com/Manifold-ai/maniphys_lab_v2d_challenge/blob/track2/p1-training/docs/report/v2d-track2-technical-report.pdf" target="_blank" rel="noopener">Read the report →</a>
+      </div>
+
+      <div class="proj-card">
         <h3>Decision-Focused Uplift Modeling</h3>
         <p class="stat">Criteo ad-uplift benchmark · ~2% avg. gain</p>
         <p>Traditional uplift models optimize prediction accuracy, not the ranking decision that's actually deployed. DFUM relaxes the budget-constrained top-k allocation into a differentiable objective, closing the gap between what the model is trained on and what it's used for.</p>
