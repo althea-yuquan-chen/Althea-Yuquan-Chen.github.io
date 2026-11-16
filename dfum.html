@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Decision-Focused Uplift Modeling — Yuquan Chen</title>
+<meta name="description" content="Training uplift models on the budget-constrained targeting decision they are used for, evaluated on 13 million Criteo records.">
+<style>
+  :root{
+    --ink:#222222; --navy:#0C6DBD; --slate:#484848; --slate-light:#8A8A8A;
+    --bg:#FFFFFF; --panel:#FFFFFF; --line:#E3E3E3; --gold:#0C6DBD; --gold-soft:#E6F0FA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy);}
+  ::selection{background:var(--gold-soft); color:var(--navy);}
+  .article{max-width:720px; margin:0 auto; padding:56px 20px 96px;}
+  .back{
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.8rem; text-decoration:none;
+    color:var(--slate); border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.72rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--slate-light); margin:40px 0 10px;
+  }
+  h1,h2{font-family:'Raleway', 'Helvetica Neue', Arial, sans-serif; font-weight:600; color:var(--ink); letter-spacing:-0.01em;}
+  h1{font-size:clamp(1.9rem,4.5vw,2.6rem); line-height:1.15; margin:0 0 16px;}
+  h2{font-size:1.35rem; margin:44px 0 10px;}
+  .lede{font-size:1.08rem; color:var(--slate); margin:0 0 28px;}
+  p{margin:0 0 16px;}
+  ul{margin:0 0 16px; padding-left:22px;}
+  li{margin-bottom:6px;}
+  code{font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.86em; background:var(--panel); border:1px solid var(--line); padding:1px 5px; border-radius:3px;}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:8px 0 32px;}
+  .stat{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:14px 14px 12px;}
+  .stat b{display:block; font-family:'Raleway', 'Helvetica Neue', Arial, sans-serif; font-size:1.35rem; color:var(--navy); line-height:1.2;}
+  .stat span{display:block; line-height:1.4; margin-top:4px;font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.72rem; color:var(--slate);}
+  .note{background:var(--panel); border-left:3px solid var(--gold); padding:14px 18px; margin:20px 0; color:var(--slate); font-size:0.95rem;}
+  table{width:100%; border-collapse:collapse; margin:8px 0 20px; font-size:0.92rem; background:var(--panel);}
+  th,td{text-align:left; padding:9px 12px; border:1px solid var(--line);}
+  th{font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif; font-size:0.75rem; color:var(--slate); font-weight:500;}
+  .foot{margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:0.9rem; color:var(--slate);}
+  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+<main class="article">
+
+  <a class="back" href="index.html#projects">← Yuquan Chen</a>
+
+  <p class="eyebrow">Decision-Focused Uplift Modeling · Undergraduate thesis, extended 2025–2026</p>
+  <h1>Training uplift models on the decision, not just the prediction</h1>
+  <p class="lede">Marketing teams use uplift models to decide who gets a coupon, and they can only afford to treat a fixed share of customers. Yet the models are trained to predict well everywhere, not to pick the right top slice. DFUM trains for the decision that is actually made, and on 13 million real ad-campaign records it ranks customers better than every baseline we compared against.</p>
+
+  <div class="stats">
+    <div class="stat"><b>0.867</b><span>AUUC, best of all models compared</span></div>
+    <div class="stat"><b>+2.2–3.7%</b><span>over S-Learner, X-Learner and GRF</span></div>
+    <div class="stat"><b>13.98M</b><span>rows of Criteo uplift data</span></div>
+    <div class="stat"><b>3 / 3</b><span>budget levels where policy value beats S- and X-Learner</span></div>
+  </div>
+
+  <h2>The problem</h2>
+  <p>An uplift model estimates how much a treatment, such as a coupon or an ad, changes each person's behaviour. In practice the estimate feeds one decision: rank everyone by predicted uplift and treat the top K that the budget allows. Standard learners such as the S-Learner and X-Learner are trained for prediction accuracy across the whole population, so errors in the long tail cost them as much as errors at the top, even though only the top ever gets treated.</p>
+
+  <h2>The approach</h2>
+  <p>DFUM adds a decision loss next to the usual prediction loss, weighted by a single parameter α. The decision loss measures the policy value of treating the top K customers by predicted uplift, estimated from the randomized treatment data with inverse propensity weighting.</p>
+  <ul>
+    <li><b>A closed-form dual instead of a learned one.</b> Selecting the top K is a small linear program whose Lagrangian dual is minimized exactly at the K-th largest predicted uplift. DFUM computes that threshold directly in every batch rather than learning it as an extra parameter.</li>
+    <li><b>A smooth gate for gradients.</b> A sigmoid around the threshold turns the hard "treat or not" choice into something the model can learn from.</li>
+    <li><b>Several budgets at once.</b> The loss averages over budgets of 10%, 20% and 30% of customers, so the model is not tuned to a single operating point.</li>
+  </ul>
+  <p>The model itself is deliberately small: a shared layer feeds separate treatment and control heads, and uplift is the difference between them. That keeps the comparison about the training objective, not model capacity.</p>
+
+  <h2>What we found</h2>
+  <p>All models were evaluated on the same held-out test split of 4.19 million rows, with 10 independent runs for each DFUM setting and 20 for each baseline.</p>
+  <table>
+    <tr><th>Model</th><th>AUUC</th><th>Qini</th></tr>
+    <tr><td>S-Learner</td><td>0.836</td><td>0.339</td></tr>
+    <tr><td>X-Learner</td><td>0.846</td><td>0.349</td></tr>
+    <tr><td>Generalized Random Forest</td><td>0.849</td><td>—</td></tr>
+    <tr><td><b>DFUM, α = 0.6</b></td><td><b>0.867</b></td><td><b>0.370</b></td></tr>
+  </table>
+  <ul>
+    <li><b>The decision loss is what drives the gain.</b> With the same architecture, AUUC rises steadily as the decision loss gets more weight: 0.802 with it switched off, then 0.848, 0.860 and 0.867 at α = 0.2, 0.4 and 0.6.</li>
+    <li><b>The ranking improves where money is spent.</b> DFUM delivers higher policy value than both the S-Learner and the X-Learner at every budget we tested, 10%, 20% and 30% of customers.</li>
+    <li><b>Two metrics agree.</b> The gap over the baselines is similar under AUUC, which weighs the whole ranking, and Qini, which weighs its head.</li>
+  </ul>
+
+  <h2>Where it fits</h2>
+  <p>DFUM belongs to the same family as Decision-Focused Causal Learning (DFCL), which Meituan published at KDD 2024 and runs in production. DFUM targets the simpler binary top-K setting and trains on a single machine, which makes it easy to reproduce. Its 2–4% gain over its baselines is in line with what DFCL reports on the same dataset under a different metric.</p>
+  <p>The natural next step is to add the decision loss to stronger base learners, such as the X-Learner, to see how much of the gain carries over.</p>
+
+  <div class="foot">
+    <p>Started as my undergraduate thesis at Nanjing University, in Prof. Jiaqi Zheng's group, and extended in 2026 with a budget-constrained objective and full-scale evaluation. Code, trained weights and result tables are in the <a href="https://github.com/althea-yuquan-chen/Decision-Focused-Uplift-Modeling" target="_blank" rel="noopener">repository</a>.</p>
+  </div>
+
+</main>
+</body>
+</html>

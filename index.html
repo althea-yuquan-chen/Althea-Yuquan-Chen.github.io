@@ -515,13 +515,13 @@
 
       <div class="proj-card">
         <h3>Decision-Focused Uplift Modeling</h3>
-        <p class="stat">Criteo ad-uplift benchmark · ~2% avg. gain</p>
-        <p>Traditional uplift models optimize prediction accuracy, not the ranking decision that's actually deployed. DFUM relaxes the budget-constrained top-k allocation into a differentiable objective, closing the gap between what the model is trained on and what it's used for.</p>
+        <p class="stat">AUUC 0.867 · +2.2–3.7% over S-/X-Learner and GRF · 13.98M rows</p>
+        <p>Uplift models decide who gets a coupon, yet they are trained to predict well everywhere rather than to pick the top slice a budget allows. DFUM trains for that decision with a closed-form Lagrangian dual of the top-K choice, and ranks customers better than every baseline compared on Criteo's 13M-record benchmark.</p>
         <div class="tags">
           <span class="tag">Causal Inference</span>
           <span class="tag">Optimization</span>
         </div>
-        <a class="link" href="https://github.com/althea-yuquan-chen/Decision-Focused-Uplift-Modeling" target="_blank" rel="noopener">View repo →</a>
+        <a class="link" href="dfum.html">Read the write-up →</a>
       </div>
 
     </div>
