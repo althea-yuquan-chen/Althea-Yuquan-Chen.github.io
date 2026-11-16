@@ -384,7 +384,7 @@
 <header class="hero-full" id="top">
   <div class="hero-inner">
     <h1>Yuquan Chen</h1>
-    <p class="hero-subtitle">AI Engineer — building AI systems that hold up against the real world: real operations, real hardware, real physics</p>
+    <p class="hero-subtitle">AI Engineer — building AI systems that hold up against the real world: real operations, real users, real constraints</p>
     <p class="hero-type"><span id="typed-text"></span><span class="cursor" aria-hidden="true">|</span></p>
   </div>
 
@@ -404,12 +404,9 @@
       <div>
         <h2>About</h2>
         <p>I'm a Master's student at Carnegie Mellon University, studying Information Systems Management, graduating in December 2026.</p>
-        <p>I'm currently at <a href="https://maniphys.ai/" target="_blank" rel="noopener"><strong>Maniphys</strong></a>, working on synthetic training data for embodied AI. I built their simulation pipeline from scratch: scenes are assembled in OpenUSD, simulated in Isaac Sim against photorealistic 3D Gaussian Splatting environments, and rendered from synchronized cameras. A clip only becomes training data once it passes checks against real physics.</p>
         <p>This summer I was the AI Engineer at <a href="https://whelix.com/" target="_blank" rel="noopener"><strong>Whelix</strong></a>, a robotics startup working on cell culture automation. As their first and only AI engineer, I designed and built the company's production multi-agent platform, which ran day-to-day operations across sales, fundraising, and engineering.</p>
         <p>Before that, I built LLM-powered tools at <a href="https://www.basf.com/cn/en" target="_blank" rel="noopener"><strong>BASF</strong></a> — using LLMs to improve production and management efficiency. At Nanjing University, I was part of <a href="https://cs.nju.edu.cn/lands/" target="_blank" rel="noopener">LANDS</a>, working under <a href="https://jzheng369.github.io/" target="_blank" rel="noopener">Jiaqi Zheng</a> on end-to-end optimization — my undergraduate thesis applied decision-focused learning and causal inference to reframe a classic uplift-modeling problem.</p>
-        <p>I'm looking at Applied AI Engineer roles and technical consulting for 2027 — work where I can take a system from demo to something that holds up under scrutiny.</p>
-
-        <a href="Yuquan_Chen_Resume.pdf" class="cv-button" target="_blank" rel="noopener">Download CV</a>
+        <p>I'm drawn to Applied AI and Forward Deployed Engineer work — sitting with the people who will use a system, and taking it from demo to something that holds up under scrutiny.</p>
 
         <div class="icon-links">
           <a href="mailto:yuquanch@andrew.cmu.edu" aria-label="Email">
@@ -437,28 +434,6 @@
     </div>
 
     <div class="xp">
-      <div class="xp-meta">Sep 2026 — Present<br>Remote</div>
-      <div>
-        <p class="xp-role">Simulation & Synthetic Data Engineer Intern</p>
-        <p class="xp-org">Maniphys · Embodied AI Training Data</p>
-        <p class="xp-tags">
-          <span class="tag">NVIDIA Isaac Sim</span>
-          <span class="tag">OpenUSD</span>
-          <span class="tag">3D Gaussian Splatting</span>
-          <span class="tag">Synthetic Data</span>
-          <span class="tag">LLM Workflows</span>
-        </p>
-        <ul>
-          <li>Designed the scene representation schema and built an end-to-end synthetic data generation pipeline for embodied AI, pairing physics-accurate meshes with photorealistic 3D Gaussian Splatting (3DGS) reconstructions; implemented OpenUSD scene assembly, NVIDIA Isaac Sim physics, synchronized multi-camera rendering, and per-frame logging.</li>
-          <li>Built the LLM scene-authoring layer: the model translated a natural-language request into a structured scene recipe, deterministic assembly resolved every pose and contact, and a vision-language model review loop critiqued a preview render before any full simulation run.</li>
-          <li>Built automated data quality validation to catch silent failures between the physics and rendering layers: pre-simulation checks that reject invalid scenes before consuming GPU compute, and post-simulation trajectory analysis that flags physically implausible outcomes such as interpenetration and state discontinuities.</li>
-          <li>Validated simulation fidelity against analytically solvable test scenes; the first end-to-end run matched expected physical behavior while rendering multiple synchronized camera views at real-time frame rates on a single GPU.</li>
-          <li>Diagnosed the root cause of slow episode startup — the engine's shader cache was being discarded on every run — and persisted it across runs, cutting per-episode runtime by roughly 4x.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="xp">
       <div class="xp-meta">May 2026 — Aug 2026<br>Boston, MA · Hybrid</div>
       <div>
         <p class="xp-role">AI Engineer Intern</p>
@@ -473,7 +448,8 @@
         <ul>
           <li>Owned AI system design end-to-end as the company's first and only AI engineer, building a production multi-agent platform from the ground up on the raw Gemini SDK, with an orchestrator that delegates to specialized sub-agents at runtime across sales, fundraising, and engineering.</li>
           <li>Built a fail-closed authorization layer that re-verifies on every delegation, gating CEO-only agents entrusted with live sales-pipeline and fundraising data.</li>
-          <li>Integrated the platform with Notion, Confluence, GitHub, and Google Workspace through 30+ custom tools, and designed the knowledge architecture that consolidates the company's fragmented documentation into one system of record.</li>
+          <li>Integrated the platform with Notion, Confluence, GitHub, and Google Workspace through 30+ custom tools, with a two-layer memory that lets stateless webhook calls hold multi-turn context.</li>
+          <li>Designed and rolled out the company's knowledge architecture: a set of linked Notion databases that became the single system of record, with one home per fact, an append-only changelog for every write, and a read/write protocol the agents follow.</li>
           <li>Designed a multi-agent eval harness with repeated-trial testing and structured failure logging, verifying a 60%+ tool-call reduction on a production agent flow.</li>
         </ul>
       </div>
@@ -485,15 +461,13 @@
         <p class="xp-role">Digitalization Intern, Asia-Pacific</p>
         <p class="xp-org">BASF</p>
         <p class="xp-tags">
-          <span class="tag">Python</span>
-          <span class="tag">Power BI</span>
-          <span class="tag">KNIME</span>
           <span class="tag">LLM APIs</span>
+          <span class="tag">Python</span>
+          <span class="tag">Stakeholder Delivery</span>
         </p>
         <ul>
-          <li>Owned digitalization initiatives across an entire business unit — production, market forecasting, supply chain, pricing, and EHS — translating ambiguous needs from both technical and non-technical stakeholders into shipped, data-driven tools.</li>
-          <li>Led or contributed to 8+ projects end-to-end, from requirements gathering on the factory floor to rollout across Asia-Pacific plants.</li>
-          <li>Built the automated forecasting and reporting infrastructure that fed VP-level pricing decisions, replacing manual analysis with a reliable weekly cadence.</li>
+          <li>Designed and deployed a GPT-4o market-intelligence engine for pricing that automated bilingual (English/Chinese) news monitoring, key-information extraction, and weekly reporting, replacing a manual multi-source process.</li>
+          <li>Owned digitalization work across a business unit — pricing, supply chain, production, and EHS — on 8+ projects, from requirements gathering on the factory floor to rollout across Asia-Pacific plants.</li>
           <li>Drove adoption on the ground — regularly on-site at chemical plants, working directly with operators to make sure what got built actually matched how the work happened.</li>
         </ul>
       </div>
@@ -513,26 +487,7 @@
           <span class="tag">PyTorch</span>
         </p>
         <ul>
-          <li>Co-authored a survey on decision-focused learning, drafting the introduction and benchmark sections and framing 100+ papers into a unified taxonomy.</li>
-          <li>Conceived and implemented Decision-Focused Uplift Modeling, a novel algorithm embedding decision-focused objectives directly into uplift estimation — an average 2% improvement over S-Learner, X-Learner, UpliftRank, and Generalized Random Forests on the 13M-row Criteo benchmark.</li>
-          <li>Delivered weekly literature briefings to a 15-member lab group on decision-focused learning and causal inference.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="xp">
-      <div class="xp-meta">Jan 2024 — Feb 2024<br>Shanghai, China · On-site</div>
-      <div>
-        <p class="xp-role">Project Intern</p>
-        <p class="xp-org">Shanghai Baosight Software</p>
-        <p class="xp-tags">
-          <span class="tag">ETL</span>
-          <span class="tag">Data Analysis</span>
-          <span class="tag">Data Modeling</span>
-        </p>
-        <ul>
-          <li>Built a one-click data query and statistics system with Python and SQLAlchemy, cleaning and structuring historical contract and production data from DB2.</li>
-          <li>Built decision tree and random forest models to extract feature importance and classification rules from historical production data.</li>
+          <li>Conceived and implemented Decision-Focused Uplift Modeling, which trains uplift models on the budget-constrained ranking decision they are deployed for — an average 2% improvement over S-Learner, X-Learner, UpliftRank, and Generalized Random Forests on the 13M-row Criteo benchmark.</li>
         </ul>
       </div>
     </div>
@@ -547,16 +502,6 @@
     <div class="proj-grid">
 
       <div class="proj-card">
-        <h3>Synthetic Data Pipeline for Embodied AI</h3>
-        <p class="stat">Maniphys · Isaac Sim + 3DGS</p>
-        <p>An end-to-end pipeline that generates physically accurate, multi-view training data for embodied AI. An LLM turns a natural-language request into a structured scene; physics-accurate meshes are paired with photorealistic 3D Gaussian Splatting reconstructions, assembled in OpenUSD, and simulated in Isaac Sim. Every episode is then validated automatically, because a clip can look right while the physics underneath is wrong.</p>
-        <div class="tags">
-          <span class="tag">Embodied AI</span>
-          <span class="tag">Simulation</span>
-        </div>
-      </div>
-
-      <div class="proj-card">
         <h3>Decision-Focused Uplift Modeling</h3>
         <p class="stat">Criteo ad-uplift benchmark · ~2% avg. gain</p>
         <p>Traditional uplift models optimize prediction accuracy, not the ranking decision that's actually deployed. DFUM relaxes the budget-constrained top-k allocation into a differentiable objective, closing the gap between what the model is trained on and what it's used for.</p>
@@ -565,27 +510,6 @@
           <span class="tag">Optimization</span>
         </div>
         <a class="link" href="https://github.com/althea-yuquan-chen/Decision-Focused-Uplift-Modeling" target="_blank" rel="noopener">View repo →</a>
-      </div>
-
-      <div class="proj-card">
-        <h3>CCF Big Data & Computing Intelligence Contest</h3>
-        <p class="stat">2nd place · 1,557 participants</p>
-        <p>Led a team building an intelligent decision-making system for omnichannel fresh-grocery inventory optimization — demand modeling, data cleaning pipeline, and prediction improvements under a live leaderboard.</p>
-        <div class="tags">
-          <span class="tag">Team Lead</span>
-          <span class="tag">Forecasting</span>
-        </div>
-      </div>
-
-      <div class="proj-card">
-        <h3>PromptPrompt</h3>
-        <p class="stat">CLI tool · CMU course project</p>
-        <p>A command-line prompt optimizer that acts as a consultant — asks clarifying questions, rewrites vague ideas into engineered prompts, and launches the refined version directly in your browser or local AI tools. I handled API integration, user authentication design, and cross-module debugging.</p>
-        <div class="tags">
-          <span class="tag">Python</span>
-          <span class="tag">LLM APIs</span>
-        </div>
-        <a class="link" href="https://github.com/althea-yuquan-chen/Promptprompt" target="_blank" rel="noopener">View repo →</a>
       </div>
 
     </div>
@@ -600,19 +524,11 @@
 
     <div class="skill-row">
       <div class="skill-label">Languages</div>
-      <div class="skill-vals">Python · SQL · R · Java</div>
+      <div class="skill-vals">Python · SQL</div>
     </div>
     <div class="skill-row">
-      <div class="skill-label">AI / ML</div>
-      <div class="skill-vals">LLM & Agent Systems · Tool-Calling & Multi-Agent Architecture · Causal Inference · Optimization</div>
-    </div>
-    <div class="skill-row">
-      <div class="skill-label">Simulation</div>
-      <div class="skill-vals">NVIDIA Isaac Sim · PhysX · OpenUSD · 3D Gaussian Splatting · Physics Simulation · Synthetic Data</div>
-    </div>
-    <div class="skill-row">
-      <div class="skill-label">Data & BI</div>
-      <div class="skill-vals">KNIME · Power BI · Data Pipelines</div>
+      <div class="skill-label">AI / Agents</div>
+      <div class="skill-vals">Gemini SDK · Tool Calling · Multi-Agent Orchestration · MCP · LLM Evals · Agent Governance · Causal Inference · PyTorch</div>
     </div>
     <div class="skill-row">
       <div class="skill-label">Platforms</div>
@@ -629,7 +545,7 @@
     <p class="eyebrow">Contact</p>
     <div class="contact-card">
       <h2>Let's talk</h2>
-      <p>Finishing my MISM at CMU in December 2026 — looking at Applied AI Engineer roles and technical consulting for 2027. Happy to talk shop about multi-agent architecture, decision-focused learning, or anything in between.</p>
+      <p>Finishing my MISM at CMU in December 2026. Happy to talk shop about deploying agents inside real organizations, multi-agent architecture, decision-focused learning, or anything in between.</p>
       <div class="contact-links">
         <a href="mailto:yuquanch@andrew.cmu.edu">Email</a>
         <a href="https://www.linkedin.com/in/yuquan-althea-chen/" target="_blank" rel="noopener">LinkedIn</a>
@@ -646,7 +562,7 @@
   var phrases = [
     "AI Engineer — multi-agent systems.",
     "Builds AI that survives real usage.",
-    "Synthetic data for embodied AI @ Maniphys.",
+    "Takes AI from demo to deployment.",
     "Decision-focused ML researcher.",
     "MISM '26 @ Carnegie Mellon."
   ];
