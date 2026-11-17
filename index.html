@@ -277,18 +277,35 @@
   /* ---------- Projects ---------- */
   .proj-grid{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
+    grid-template-columns:1fr;
+    gap:24px;
   }
   .proj-card{
     background:var(--panel);
     border:1px solid var(--line);
     border-radius:6px;
-    padding:24px;
-    display:flex;
-    flex-direction:column;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:clamp(220px, 34%, 360px) 1fr;
   }
+  .proj-media{
+    margin:0;
+    background:#FFFFFF;
+    border-right:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  }
+  .proj-media img{display:block; width:100%; height:auto;}
+  .proj-body{padding:24px 26px; display:flex; flex-direction:column;}
   .proj-card h3{font-size:1.08rem; margin-bottom:8px;}
+  .proj-card .credit{
+    font-size:0.72rem;
+    color:var(--slate-light);
+    margin:10px 0 0 0;
+    flex-grow:0;
+  }
   .proj-card .stat{
     font-family:'Open Sans', 'Helvetica Neue', Arial, sans-serif;
     font-size:0.78rem;
@@ -307,7 +324,10 @@
   }
 
   @media (max-width:680px){
-    .proj-grid{grid-template-columns:1fr;}
+    .proj-card{grid-template-columns:1fr;}
+    .proj-media{border-right:none; border-bottom:1px solid var(--line);}
+    .proj-media img{max-width:360px;}
+    .proj-body{padding:20px;}
   }
 
   /* ---------- Skills ---------- */
@@ -499,26 +519,37 @@
     <div class="proj-grid">
 
       <div class="proj-card">
-        <h3>NVIDIA Video-to-Data Challenge</h3>
-        <p class="stat">3rd / 19 teams · success 0.27 → 0.47 · error 55 → 37 cm · 30/30 physics checks</p>
-        <p>Turned a single third-person video into robot training data: I owned 4D human–object reconstruction for the video-only tier, with no clean ground truth to lean on. The work that mattered was making it trustworthy — a timeline search that stops objects from flipping, depth fixed along the camera's line of sight, support surfaces inferred from the objects themselves, and rules enforced in code.</p>
-        <div class="tags">
-          <span class="tag">4D Reconstruction</span>
-          <span class="tag">Robotics</span>
-          <span class="tag">Reliability</span>
+        <figure class="proj-media">
+          <img src="assets/cards/v2d.jpg" width="560" height="587" loading="lazy" alt="Two video frames of a person carrying and setting down a light-blue book, each shown next to the reconstructed 3D pose of the book overlaid on the frame.">
+        </figure>
+        <div class="proj-body">
+          <h3>NVIDIA Video-to-Data Challenge</h3>
+          <p class="stat">3rd / 19 teams · success 0.27 → 0.47 · error 55 → 37 cm · 30/30 physics checks</p>
+          <p>Turned a single third-person video into robot training data: I owned 4D human–object reconstruction for the video-only tier, with no clean ground truth to lean on. The work that mattered was making it trustworthy — a timeline search that stops objects from flipping, depth fixed along the camera's line of sight, support surfaces inferred from the objects themselves, and rules enforced in code.</p>
+          <div class="tags">
+            <span class="tag">4D Reconstruction</span>
+            <span class="tag">Robotics</span>
+            <span class="tag">Reliability</span>
+          </div>
+          <a class="link" href="v2d.html">Read the write-up →</a>
+          <p class="credit">Frames: <a href="https://huggingface.co/datasets/nvidia/video_to_data_challenge">NVIDIA Video-to-Data Challenge dataset</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; cropped, with reconstruction overlay.</p>
         </div>
-        <a class="link" href="v2d.html">Read the write-up →</a>
       </div>
 
       <div class="proj-card">
-        <h3>Decision-Focused Uplift Modeling</h3>
-        <p class="stat">AUUC 0.867 · +2.2–3.7% over S-/X-Learner and GRF · 13.98M rows</p>
-        <p>Uplift models decide who gets a coupon, yet they are trained to predict well everywhere rather than to pick the top slice a budget allows. DFUM trains for that decision with a closed-form Lagrangian dual of the top-K choice, and ranks customers better than every baseline compared on Criteo's 13M-record benchmark.</p>
-        <div class="tags">
-          <span class="tag">Causal Inference</span>
-          <span class="tag">Optimization</span>
+        <figure class="proj-media">
+          <img src="assets/cards/dfum.png" width="560" height="514" loading="lazy" alt="Test AUUC rising from 0.802 to 0.867 as the decision-loss weight alpha goes from 0 to 0.6, shown against S-Learner and X-Learner baselines at 0.836 and 0.846.">
+        </figure>
+        <div class="proj-body">
+          <h3>Decision-Focused Uplift Modeling</h3>
+          <p class="stat">AUUC 0.867 · +2.2–3.7% over S-/X-Learner and GRF · 13.98M rows</p>
+          <p>Uplift models decide who gets a coupon, yet they are trained to predict well everywhere rather than to pick the top slice a budget allows. DFUM trains for that decision with a closed-form Lagrangian dual of the top-K choice, and ranks customers better than every baseline compared on Criteo's 13M-record benchmark.</p>
+          <div class="tags">
+            <span class="tag">Causal Inference</span>
+            <span class="tag">Optimization</span>
+          </div>
+          <a class="link" href="dfum.html">Read the write-up →</a>
         </div>
-        <a class="link" href="dfum.html">Read the write-up →</a>
       </div>
 
     </div>

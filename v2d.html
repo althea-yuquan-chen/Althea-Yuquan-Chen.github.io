@@ -8,6 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <title>One Video to Robot Data — Yuquan Chen</title>
 <meta name="description" content="How I reconstructed 4D human–object motion from a single video for the NVIDIA Video-to-Data Challenge, and what it took to make the reconstructions trustworthy enough to train robots on.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://althea-yuquan-chen.github.io/v2d.html">
+<meta property="og:title" content="Turning one video into robot training data">
+<meta property="og:description" content="4D human–object reconstruction from single-view video with no clean ground truth, for the NVIDIA Video-to-Data Challenge. Team placed 3rd of 19 on the Tier 3 success-rate leaderboard.">
+<meta property="og:image" content="https://althea-yuquan-chen.github.io/assets/og/v2d.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Video frames of a person carrying a light-blue book, next to the reconstructed 3D pose of the book. Frames from the NVIDIA Video-to-Data Challenge dataset, CC BY 4.0.">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
     --ink:#222222; --navy:#0C6DBD; --slate:#484848; --slate-light:#8A8A8A;
@@ -113,6 +122,7 @@
   <div class="foot">
     <p><b>Team.</b> Maniphys Lab, five registered members. Rongxuan Zhou led policy training, retargeting, frame-0 alignment and the submission, wrote the team's <a href="https://github.com/Manifold-ai/maniphys_lab_v2d_challenge/blob/track2/p1-training/docs/report/v2d-track2-technical-report.pdf" target="_blank" rel="noopener">technical report</a>. Yudong Tao advised throughout. I built the Tier 3 reconstruction pipeline and the reconstruction versions behind our final Tier 3 submission.</p>
     <p>Leaderboard figures are from the Kaggle final standings. <a href="https://nvidia-isaac.github.io/video_to_data/v2d_challenge/" target="_blank" rel="noopener">About the challenge</a>.</p>
+    <p>The preview image for this page uses frames from the <a href="https://huggingface.co/datasets/nvidia/video_to_data_challenge" target="_blank" rel="noopener">NVIDIA Video-to-Data Challenge dataset</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>; the frames are cropped and overlaid with our reconstruction.</p>
   </div>
 
 </main>
