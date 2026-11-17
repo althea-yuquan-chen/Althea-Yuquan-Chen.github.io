@@ -10,7 +10,7 @@
 <meta name="description" content="Training uplift models on the budget-constrained targeting decision they are used for, evaluated on 13 million Criteo records.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://althea-yuquan-chen.github.io/dfum.html">
-<meta property="og:title" content="Training uplift models on the decision, not just the prediction">
+<meta property="og:title" content="Training uplift models on the decision they are deployed for">
 <meta property="og:description" content="Decision-focused learning for budget-constrained top-K targeting. On Criteo Uplift v2, test AUUC rises from 0.802 to 0.867 as the decision loss gets more weight, against 0.846 for an X-Learner baseline.">
 <meta property="og:image" content="https://althea-yuquan-chen.github.io/assets/og/dfum.png">
 <meta property="og:image:width" content="1200">
@@ -65,24 +65,24 @@
   <a class="back" href="index.html#projects">← Yuquan Chen</a>
 
   <p class="eyebrow">Decision-Focused Uplift Modeling · Undergraduate thesis, extended 2025–2026</p>
-  <h1>Training uplift models on the decision, not just the prediction</h1>
-  <p class="lede">Marketing teams use uplift models to decide who gets a coupon, and they can only afford to treat a fixed share of customers. Yet the models are trained to predict well everywhere, not to pick the right top slice. DFUM trains for the decision that is actually made, and on 13 million real ad-campaign records it ranks customers better than every baseline we compared against.</p>
+  <h1>Training uplift models on the decision they are deployed for</h1>
+  <p class="lede">Marketing teams use uplift models to decide who gets a coupon, and they can only afford to treat a fixed share of customers. Yet the models are trained to predict well everywhere, not to pick the right top slice. DFUM trains for the top-K decision itself. On 13.98 million Criteo ad-campaign records, its AUUC was the highest of the models we compared.</p>
 
   <div class="stats">
     <div class="stat"><b>0.867</b><span>AUUC, best of all models compared</span></div>
     <div class="stat"><b>+2.2–3.7%</b><span>over S-Learner, X-Learner and GRF</span></div>
     <div class="stat"><b>13.98M</b><span>rows of Criteo uplift data</span></div>
-    <div class="stat"><b>3 / 3</b><span>budget levels where policy value beats S- and X-Learner</span></div>
+    <div class="stat"><b>3 / 3</b><span>budget levels where policy value is above S- and X-Learner's</span></div>
   </div>
 
   <h2>The problem</h2>
-  <p>An uplift model estimates how much a treatment, such as a coupon or an ad, changes each person's behaviour. In practice the estimate feeds one decision: rank everyone by predicted uplift and treat the top K that the budget allows. Standard learners such as the S-Learner and X-Learner are trained for prediction accuracy across the whole population, so errors in the long tail cost them as much as errors at the top, even though only the top ever gets treated.</p>
+  <p>An uplift model estimates how much a treatment, such as a coupon or an ad, changes each person's behavior. In practice the estimate feeds one decision: rank everyone by predicted uplift and treat the top K that the budget allows. Standard learners such as the S-Learner and X-Learner are trained for prediction accuracy across the whole population. Errors in the long tail cost them as much as errors at the top, and only the top ever gets treated.</p>
 
   <h2>The approach</h2>
   <p>DFUM adds a decision loss next to the usual prediction loss, weighted by a single parameter α. The decision loss measures the policy value of treating the top K customers by predicted uplift, estimated from the randomized treatment data with inverse propensity weighting.</p>
   <ul>
     <li><b>A closed-form dual instead of a learned one.</b> Selecting the top K is a small linear program whose Lagrangian dual is minimized exactly at the K-th largest predicted uplift. DFUM computes that threshold directly in every batch rather than learning it as an extra parameter.</li>
-    <li><b>A smooth gate for gradients.</b> A sigmoid around the threshold turns the hard "treat or not" choice into something the model can learn from.</li>
+    <li><b>A smooth gate for gradients.</b> A sigmoid around the threshold makes the hard "treat or not" choice differentiable.</li>
     <li><b>Several budgets at once.</b> The loss averages over budgets of 10%, 20% and 30% of customers, so the model is not tuned to a single operating point.</li>
   </ul>
   <p>The model itself is deliberately small: a shared layer feeds separate treatment and control heads, and uplift is the difference between them. That keeps the comparison about the training objective, not model capacity.</p>
@@ -97,13 +97,13 @@
     <tr><td><b>DFUM, α = 0.6</b></td><td><b>0.867</b></td><td><b>0.370</b></td></tr>
   </table>
   <ul>
-    <li><b>The decision loss is what drives the gain.</b> With the same architecture, AUUC rises steadily as the decision loss gets more weight: 0.802 with it switched off, then 0.848, 0.860 and 0.867 at α = 0.2, 0.4 and 0.6.</li>
-    <li><b>The ranking improves where money is spent.</b> DFUM delivers higher policy value than both the S-Learner and the X-Learner at every budget we tested, 10%, 20% and 30% of customers.</li>
+    <li><b>The ablation suggests that the decision loss drives the gain.</b> With the same architecture, AUUC rises steadily as the decision loss gets more weight: 0.802 with it switched off, then 0.848, 0.860 and 0.867 at α = 0.2, 0.4 and 0.6.</li>
+    <li><b>The ranking improves where money is spent.</b> DFUM delivers higher policy value than both the S-Learner and the X-Learner at each budget tested (10%, 20% and 30% of customers).</li>
     <li><b>Two metrics agree.</b> The gap over the baselines is similar under AUUC, which weighs the whole ranking, and Qini, which weighs its head.</li>
   </ul>
 
   <h2>Where it fits</h2>
-  <p>DFUM belongs to the same family as Decision-Focused Causal Learning (DFCL), which Meituan published at KDD 2024 and runs in production. DFUM targets the simpler binary top-K setting and trains on a single machine, which makes it easy to reproduce. Its 2–4% gain over its baselines is in line with what DFCL reports on the same dataset under a different metric.</p>
+  <p>DFUM belongs to the same family as Decision-Focused Causal Learning (DFCL), which Meituan published at KDD 2024 and runs in production. DFUM targets the simpler binary top-K setting and trains on a single machine, which makes it easy to reproduce. Its 2.2–3.7% gain over its baselines is in line with what DFCL reports on the same dataset under a different metric.</p>
   <p>The natural next step is to add the decision loss to stronger base learners, such as the X-Learner, to see how much of the gain carries over.</p>
 
   <div class="foot">
