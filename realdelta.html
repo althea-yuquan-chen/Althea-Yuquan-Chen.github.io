@@ -58,6 +58,9 @@
   figure{margin:8px 0 24px;}
   figure img{display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:6px;}
   figcaption{font-size:0.8rem; color:var(--slate-light); margin-top:8px; line-height:1.5;}
+  pre.term{font-family:ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; font-size:0.72rem; line-height:1.55; background:#13263B; color:#E6EDF5; border-radius:6px; padding:16px 18px; margin:8px 0 10px; overflow-x:auto; white-space:pre;}
+  pre.term .cmd{color:#9CC8F0;}
+  pre.term .hit{color:#FFD27A;}
   .foot{margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:0.9rem; color:var(--slate);}
   @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} table{font-size:0.85rem;} th,td{padding:7px 8px;} }
 </style>
@@ -84,6 +87,23 @@
     <img src="assets/og/realdelta.png" width="1200" height="627" alt="Simulated chance of detecting 3 broken cases out of 40: 0.13 with 1 trial per case, 0.54 with 3, 0.85 with 5 and 0.99 with 10, while false alarms stay between 0.020 and 0.043.">
     <figcaption>The planner's answer for a 40-case suite where 3 cases break: one trial per case catches it 13% of the time, five trials 85%, ten 99%. A simulation result for this setting, not a calibration claim: no gated calibration row has cases breaking outright, and 1 trial per case is also below the gated range.</figcaption>
   </figure>
+
+  <h2>What it looks like</h2>
+  <p>Two comparisons from the repository's synthetic demo: 40 cases, 5 trials each, against the same baseline run. The first candidate is the unchanged agent run again; in the second, 3 cases always fail.</p>
+<pre class="term"><span class="cmd">$ realdelta compare baseline.jsonl rerun.jsonl</span>
+Baseline baseline.jsonl: 40 cases, trials per case min 5 / median 5 / max 5, 200 trials in total
+Candidate rerun.jsonl: 40 cases, trials per case min 5 / median 5 / max 5, 200 trials in total
+Change in pass rate (candidate - baseline, suite scope): +0.0150, 95% interval [-0.0246, +0.0562]
+<span class="hit">Detected: no (interval contains 0)</span>
+p-value: 0.6173 (sign-flip permutation, 10000 random sign flips, seed 0)
+
+<span class="cmd">$ realdelta compare baseline.jsonl regression.jsonl</span>
+Baseline baseline.jsonl: 40 cases, trials per case min 5 / median 5 / max 5, 200 trials in total
+Candidate regression.jsonl: 40 cases, trials per case min 5 / median 5 / max 5, 200 trials in total
+Change in pass rate (candidate - baseline, suite scope): -0.1000, 95% interval [-0.1555, -0.0451]
+<span class="hit">Detected: yes (interval excludes 0)</span>
+p-value: 0.0438 (sign-flip permutation, 10000 random sign flips, seed 0)</pre>
+  <p style="font-size:0.8rem; color:var(--slate-light);">Output copied from the demo's recorded transcript. Each report also prints a region line and notes on what it cannot tell you, trimmed here; the <a href="https://github.com/althea-yuquan-chen/realdelta/blob/main/examples/synthetic/transcript.txt" target="_blank" rel="noopener">full transcript</a> is in the repository. The demo runs it as <code>python -m realdelta</code>, which is the same command.</p>
 
   <h2>The first calibration run failed</h2>
   <p>Before trusting the intervals I committed a protocol: simulated suites with known pass rates, 2,000 repetitions per setting, and a gate that every gated setting must cover the truth at least 93% of the time for a 95% interval. The first final run failed. With 5 cases, 1 trial each and pass rates near 100%, the Wilson interval I used covered 91.7%, because a single failure pulls its upper bound below the truth.</p>
