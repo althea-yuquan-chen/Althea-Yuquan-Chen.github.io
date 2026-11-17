@@ -64,12 +64,11 @@
 </head>
 <body>
 <main class="article">
-
   <a class="back" href="index.html#projects">← Yuquan Chen</a>
 
   <p class="eyebrow">realdelta · Open-source Python library · Fall 2026</p>
   <h1>Is that change in your agent eval real, or noise?</h1>
-  <p class="lede">You change a prompt, re-run the eval suite, and the pass rate goes from 82% to 86%. Agents are random, so the same agent re-run can move that much on its own. realdelta tells you whether a move is larger than that noise, and how many repeated trials per case you need before it can tell. Before trusting its intervals I checked them on a calibration grid fixed in advance, and the first run failed.</p>
+  <p class="lede">You change a prompt, re-run the eval suite, and the pass rate goes from 82% to 86%. The same agent re-run can move that much on its own. realdelta tells you whether a move is larger than that noise, and how many trials per case you need before it can tell. I checked its intervals against a protocol fixed in advance, and the first run failed.</p>
 
   <div class="stats">
     <div class="stat"><b>36.8%</b><span>of re-runs of an unchanged simulated agent (40 cases, 5 trials each) moved the pass rate 2 points or more</span></div>
@@ -79,57 +78,46 @@
   </div>
 
   <h2>The problem</h2>
-  <p>Run the same agent on the same eval twice and some cases flip: a tool call times out, the model phrases an answer differently, a long plan takes another branch. In a simulated suite of 40 cases that pass about 95% of the time, run 5 times each, two runs of the <em>unchanged</em> agent differed by 2 points or more in 184 of 500 pairs (36.8%) and by 4 points or more in 35 (7.0%). A 4-point move sits at the 95th percentile of pure noise there, even with 200 trials per run.</p>
-  <p>The usual fixes are to run more trials and to compare with a test, but both raise questions that are easy to get wrong. Which unit is random, the trial or the case? How many trials are enough? Does a standard test answer the question you are asking? realdelta packages one set of answers and is explicit about where they were checked.</p>
-
-  <h2>What it does</h2>
-  <ul>
-    <li><b>Pass-rate intervals in two scopes.</b> <code>suite</code> asks how sure we are about this fixed set of cases, so only trial-to-trial noise counts. <code>population</code> asks about cases like these, so case-to-case spread counts too. The two answer different questions; the population interval contains the suite interval, so it is never narrower.</li>
-    <li><b>Paired comparisons.</b> Baseline and candidate run on the same cases; the change gets an interval, and <code>detected</code> means that interval excludes zero.</li>
-    <li><b>A trial planner.</b> It simulates a suite you describe, under either a small shift on every case or a few cases breaking outright (the common agent regression), and reports the chance of detecting the change and of a false alarm for 1, 3, 5, 10 or 20 trials per case, plus the cost at prices you supply. These are simulations; the calibration grid has no rows where cases break outright, so plans for that kind of change have no calibration evidence behind them.</li>
-  </ul>
-  <p>Results come in as one JSON Lines or CSV record per trial, and the same three operations are available from the command line. File-format errors name the file, line and field, never the value.</p>
+  <p>Run the same agent twice and some cases flip. In a simulated suite of 40 cases that pass about 95% of the time, run 5 times each, two runs of the <em>unchanged</em> agent differed by 2 points or more in 184 of 500 pairs (36.8%); a 4-point move sat at the 95th percentile of pure noise. realdelta gives pass-rate intervals for repeated trials, either for this fixed suite or for a population of cases like it, a paired comparison that reports a change as detected when its interval excludes zero, and a planner that simulates how many trials per case a given regression needs.</p>
 
   <figure>
     <img src="assets/og/realdelta.png" width="1200" height="627" alt="Simulated chance of detecting 3 broken cases out of 40: 0.13 with 1 trial per case, 0.54 with 3, 0.85 with 5 and 0.99 with 10, while false alarms stay between 0.020 and 0.043.">
     <figcaption>The planner's answer for a 40-case suite where 3 cases break: one trial per case catches it 13% of the time, five trials 85%, ten 99%. A simulation result for this setting, not a calibration claim: no gated calibration row has cases breaking outright, and 1 trial per case is also below the gated range.</figcaption>
   </figure>
 
-  <h2>Checking the intervals before trusting them</h2>
-  <p>An interval is only useful if it contains the truth as often as it claims. I wrote the check down before running it: a grid of simulated suites with known pass rates (for pass rates: 5 to 50 cases, 1 to 10 trials per case, case pass rates from widely spread to nearly always passing), 2,000 repetitions per row, and a gate that every gated row must cover the truth at least 93% of the time for a 95% interval. The protocol was committed before any final result existed, and each final grid ran once.</p>
-  <p>The first final run failed. With 5 cases, 1 trial each and pass rates near 100%, the Wilson interval I was using covered only 91.7%: a single failure pulls its upper bound below the truth. I did not move the gate. A written amendment added an exact analytic check and two replacement methods; both failed it. A second amendment added a third, Clopper–Pearson with the effective sample size capped at the number of trials run, which passed. Because I designed that one after seeing the second round fail, I don't count the analytic check as evidence for it; the independent evidence is the unchanged coverage tests and a fresh grid that ran once after the implementation.</p>
+  <h2>The first calibration run failed</h2>
+  <p>Before trusting the intervals I committed a protocol: simulated suites with known pass rates, 2,000 repetitions per setting, and a gate that every gated setting must cover the truth at least 93% of the time for a 95% interval. The first final run failed. With 5 cases, 1 trial each and pass rates near 100%, the Wilson interval I used covered 91.7%, because a single failure pulls its upper bound below the truth.</p>
+  <p>I kept the gate. Two written amendments tested replacements, and the one that passed is Clopper–Pearson with the effective sample size capped at the number of trials run. I designed it after the earlier candidates failed, so its independent evidence is the unchanged coverage tests and a fresh grid run once afterwards.</p>
   <table>
     <tr><th>Quantity</th><th>Gated rows</th><th>Lowest estimated coverage</th></tr>
     <tr><td>Suite pass rate</td><td>36</td><td>0.956</td></tr>
     <tr><td>Population pass rate</td><td>40</td><td>0.951</td></tr>
     <tr><td>Suite change (paired)</td><td>25</td><td>0.945</td></tr>
   </table>
-  <p>The fix has a price, and the README states it: suite pass-rate intervals are about 1.11 times as wide as before (median across rows), and 7 of the 36 suite rows cover more than 99.5%. One planned feature, an interval for the population-scope change, failed its width rule in the first run and is not shipped; calling it raises an error instead of returning a number nobody checked.</p>
+  <p>The fix cost width: suite intervals are about 1.11 times as wide as before (median across rows). An interval for the population-scope change failed its width rule and is not shipped; calling it raises an error instead of returning a number nobody checked.</p>
 
-  <h2>Where the test and the interval disagree</h2>
-  <p>A sign-flip permutation test is a standard paired test. In a simulated candidate where 3 of 40 cases fail every time (5 trials per case), the interval excluded zero in 84.6% of runs and the test's p-value was below 0.05 in 15.2%. They do not run at the same false-alarm rate: with no change, the interval flagged 4.6% of pairs and the p-value 2.8%. The test asks whether cases moved in a consistent direction across the suite, and only 3 of them moved. The interval asks the suite-scope question: is this change larger than the trial-to-trial noise of this fixed suite. realdelta is built around the suite-scope question, so it decides with the interval and reports the p-value only alongside it; the two can disagree, and the p-value's calibration was not checked. A permutation test within cases would match the suite scope; it is a candidate for the next version.</p>
+  <h2>In simulation, a standard test caught a few-case regression far less often than the interval</h2>
+  <p>When 3 of 40 cases fail every time (simulated, 5 trials per case), the interval detected the change in 84.6% of runs; a sign-flip permutation test reached p &lt; 0.05 in 15.2%. With no change, they flagged 4.6% and 2.8% of pairs. The test asks whether cases moved in a consistent direction across the suite, and only 3 moved. The interval asks whether this fixed suite changed by more than its trial-to-trial noise. realdelta decides with the interval and reports the p-value, whose calibration was not checked, alongside it.</p>
 
-  <h2>One pre-registered run on a real model</h2>
-  <p>The library also needed one honest run on a real model. I generated 40 puzzles (arithmetic, letter counting, weekdays, sorting; 10 each), fixed the prompts, grader, arms and analysis in a protocol before any paid call (a written amendment, also made before any call, set the model), and ran GPT-5.6 Luna through Azure OpenAI: three arms, 5 trials per case, 600 calls in one interleaved order. A1 and A2 use the same system prompt, so they form an A/A pair; B adds "Answer immediately; do not show your working."</p>
+  <h2>On a real model, the pass rate mostly measured formatting</h2>
+  <p>I pre-registered one run on GPT-5.6 Luna through Azure OpenAI: 40 generated puzzles, three arms, 5 trials per case, 600 calls. A1 and A2 share a prompt, so they form an A/A pair; B adds "Answer immediately; do not show your working."</p>
   <table>
     <tr><th>Comparison</th><th>Change</th><th>95% interval</th><th>Result</th></tr>
     <tr><td>A1 vs A2 (same prompt)</td><td>−0.020</td><td>[−0.086, +0.046]</td><td>not flagged</td></tr>
     <tr><td>A1 vs B</td><td>−0.055</td><td>[−0.123, +0.014]</td><td>not detected</td></tr>
   </table>
-  <p>The A/A pair was not flagged, and the A1–B change was not detected at this scale; its interval says how large that change could still be. The more useful finding came from reading the failures. A trial passed only if the value was right and the last line had the form <code>ANSWER: &lt;value&gt;</code>. Most failures were a correct value without that prefix: ignoring the prefix, the arms got 196, 199 and 197 of 200 trials right. So the pass rates here mostly measure compliance with the answer format, not puzzle-solving. That reading is descriptive and was not part of the pre-registered analysis, and the README says so.</p>
-  <div class="note">One A/A pair not being flagged is a single draw. In the simulation, 4.6% of unchanged pairs were flagged, and the calibration tests allow up to 7%. A1 appears in both comparisons, so they are not independent, and the puzzles are synthetic: the run says nothing about other tasks.</div>
+  <p>Reading the failures told me more than either comparison. A trial passed only if the value was right and the last line began with <code>ANSWER:</code>. Most failures were right values without that prefix. Ignoring it, the arms got 196, 199 and 197 of 200 trials right, so the pass rates mostly measure answer-format compliance. That reading is descriptive, not part of the pre-registered analysis.</p>
+  <div class="note">One A/A pair not being flagged is a single draw; in the simulation 4.6% of unchanged pairs were flagged. A1 appears in both comparisons, so they are not independent, and the puzzles are synthetic: the run says nothing about other tasks.</div>
 
   <h2>What I'd keep</h2>
   <ul>
-    <li><b>Decide what counts as success before the run.</b> The gate, the grid and the rules for failures were in a committed file before the results, so a failed run led to a documented fix rather than a quiet adjustment.</li>
-    <li><b>Ship the limits with the numbers.</b> The comparison and planning reports end with notes on what they cannot tell you, and settings outside the tested range print a warning.</li>
-    <li><b>Read the failures, not just the rate.</b> On the real model, the rate looked like accuracy and was mostly formatting.</li>
-    <li><b>Prefer refusing to guessing.</b> An unchecked interval raises an error instead of returning a number.</li>
+    <li><b>Fix the success criteria before the run.</b> A failed run then leads to a documented fix rather than a quiet adjustment.</li>
+    <li><b>Read the failures, not just the rate.</b></li>
+    <li><b>Refuse rather than guess.</b> An unchecked interval raises an error instead of returning a number.</li>
   </ul>
 
   <div class="foot">
-    <p>Version 0.1.0, Apache-2.0, not yet on PyPI; installs from a clone, with tests run in CI on Python 3.10 to 3.13 on Linux and Windows. Code, the calibration protocol with both amendments, every result file and the real-model run are in the <a href="https://github.com/althea-yuquan-chen/realdelta" target="_blank" rel="noopener">repository</a>.</p>
-    <p>All tested settings are 95% intervals on simulated suites. The README gives the tested ranges, the assumptions each scope needs and the settings with no evidence; every gated row is in the committed grid results.</p>
+    <p>Version 0.1.0, Apache-2.0, not yet on PyPI; tests run in CI on Python 3.10 to 3.13 on Linux and Windows. Code, the protocol with both amendments, every result file and the real-model run are in the <a href="https://github.com/althea-yuquan-chen/realdelta" target="_blank" rel="noopener">repository</a>. All tested settings are 95% intervals on simulated suites; the README lists the tested ranges, the assumptions and the settings with no evidence.</p>
   </div>
 
 </main>
