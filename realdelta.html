@@ -71,7 +71,7 @@
 
   <p class="eyebrow">realdelta · Open-source Python library · Fall 2026</p>
   <h1>Is that change in your agent eval real, or noise?</h1>
-  <p class="lede">You change a prompt, re-run the eval suite, and the pass rate goes from 82% to 86%. The same agent re-run can move that much on its own. realdelta tells you whether a move is larger than that noise, and how many trials per case you need before it can tell. I checked its intervals against a protocol fixed in advance, and the first run failed.</p>
+  <p class="lede">You change a prompt, re-run the eval suite, and the pass rate goes from 82% to 86%. The same agent re-run can move that much on its own. realdelta tells you whether a move is larger than that noise, and how many trials per case you need before it can tell. Its intervals are checked against a calibration gate fixed in advance. The first suite pass-rate interval failed that gate and was replaced.</p>
 
   <div class="stats">
     <div class="stat"><b>36.8%</b><span>of 500 pairs of runs of an unchanged simulated agent (40 cases, 5 trials each) differed by 2 points or more</span></div>
@@ -105,16 +105,17 @@ Change in pass rate (candidate - baseline, suite scope): -0.1000, 95% interval [
 p-value: 0.0438 (sign-flip permutation, 10000 random sign flips, seed 0)</pre>
   <p style="font-size:0.8rem; color:var(--slate-light);">Output copied from the demo's recorded transcript. Each report also prints a region line and notes on what it cannot tell you. Both are trimmed here, and the <a href="https://github.com/althea-yuquan-chen/realdelta/blob/main/examples/synthetic/transcript.txt" target="_blank" rel="noopener">full transcript</a> is in the repository. The demo runs it as <code>python -m realdelta</code>, which is the same command.</p>
 
-  <h2>The first calibration run failed</h2>
-  <p>Before trusting the intervals, I committed a protocol: simulated suites with known pass rates and 2,000 repetitions per setting. Its gate requires every gated setting to cover the truth at least 93% of the time for a 95% interval. The first final run failed. With 5 cases, 1 trial each and pass rates near 100%, the Wilson interval I used covered 91.7%, because a single failure pulls its upper bound below the truth.</p>
-  <p>I kept the gate. Two written amendments tested replacements, and the one that passed is Clopper–Pearson with the effective sample size capped at the number of trials run. I designed it after the earlier candidates failed, so its independent evidence is the unchanged coverage tests and a fresh grid run once afterwards.</p>
+  <h2>Each shipped interval passed a coverage gate fixed in advance</h2>
+  <p>The calibration protocol was committed before the final grid produced any result: simulated suites with known pass rates and 2,000 repetitions per setting. Its gate requires every gated setting to cover the truth at least 93% of the time for a 95% interval. The suite pass-rate interval is Clopper–Pearson with the effective sample size capped at the number of trials run.</p>
+  <p>It replaced a Wilson interval, which failed the first final run. With 5 cases, 1 trial each and pass rates near 100%, Wilson covered 91.7%, because a single failure pulls its upper bound below the truth. The gate stayed as written. I tested replacements under two written amendments. I designed the capped interval after the earlier candidates failed, so its independent evidence is the unchanged coverage tests and a fresh grid run once afterwards.</p>
   <table>
     <tr><th>Quantity</th><th>Gated rows</th><th>Lowest estimated coverage</th></tr>
     <tr><td>Suite pass rate</td><td>36</td><td>0.956</td></tr>
     <tr><td>Population pass rate</td><td>40</td><td>0.951</td></tr>
     <tr><td>Suite change (paired)</td><td>25</td><td>0.945</td></tr>
   </table>
-  <p>The fix cost width: suite intervals are about 1.11 times as wide as before (median across rows). An interval for the population-scope change failed its width rule and is not shipped. Calling it raises an error instead of returning a number nobody checked.</p>
+  <p>The paired change still combines the two arms' Wilson intervals (MOVER). It is gated only for 10 to 50 cases with 3 to 10 trials each, plus one unequal-trials setting. Wilson bounds under-cover near 100%, and a reported-only diagnostic covers part of that region.</p>
+  <p>The fix cost width: suite pass-rate intervals are about 1.11 times as wide as the Wilson intervals (median across rows). An interval for the population-scope change failed its width rule and is not shipped. Calling it raises an error instead of returning a number nobody checked.</p>
 
   <h2>In simulation, a standard test caught a few-case regression far less often than the interval</h2>
   <p>When 3 of 40 cases fail every time (simulated, 5 trials per case), the interval detected the change in 84.6% of runs. A sign-flip permutation test reached p &lt; 0.05 in 15.2%. With no change, they flagged 4.6% and 2.8% of pairs. The test asks whether cases moved in a consistent direction across the suite, and only 3 moved. The interval asks whether this fixed suite changed by more than its trial-to-trial noise. realdelta decides with the interval. It also reports the p-value, whose calibration was not checked.</p>
@@ -126,7 +127,7 @@ p-value: 0.0438 (sign-flip permutation, 10000 random sign flips, seed 0)</pre>
     <tr><td>A1 vs A2 (same prompt)</td><td>−0.020</td><td>[−0.086, +0.046]</td><td>not flagged</td></tr>
     <tr><td>A1 vs B</td><td>−0.055</td><td>[−0.123, +0.014]</td><td>not detected</td></tr>
   </table>
-  <p>Reading the failures told me more than either comparison. A trial passed only if the value was right and the last line began with <code>ANSWER:</code>. Most failures were right values without that prefix. Ignoring it, the arms got 196, 199 and 197 of 200 trials right, so the pass rates mostly measure answer-format compliance. That reading is descriptive, not part of the pre-registered analysis.</p>
+  <p>A trial passed only if the value was right and the last line began with <code>ANSWER:</code>. Most failures were right values without that prefix. Ignoring it, the arms got 196, 199 and 197 of 200 trials right, so the pass rates mostly measure answer-format compliance. That reading is descriptive, not part of the pre-registered analysis.</p>
   <div class="note">The A/A pair was not flagged, which is one draw. In the simulation, 4.6% of unchanged pairs were flagged. A1 appears in both comparisons, so they are not independent. The puzzles are synthetic, and the run says nothing about other tasks.</div>
 
   <h2>On public leaderboard data, one pre-registered interval reached about 7 points either side</h2>
@@ -138,11 +139,11 @@ p-value: 0.0438 (sign-flip permutation, 10000 random sign flips, seed 0)</pre>
   <p>How large a change could this setting detect? I simulated 50-task suites with per-task pass rates drawn from a Beta fitted to the two submissions' per-task pass counts, with independent arms. At 4 trials per task, the first shift on the grid to reach power 0.8 was −0.12 (realized change −0.116, power 0.897). At −0.10 the power was 0.763. For a 1-point change, the first option on the grid to reach power 0.8 was 256 trials per task (power 0.867, against 0.563 at 128 trials). That row is an extrapolation outside the tested range of 3 to 10 trials. With the planner's default pass rates, the first such option was 512 trials (power 0.809, within 1 SE of 0.8). These numbers describe the interval under these assumptions, not the two submissions or the leaderboard.</p>
   <div class="note">71 of the 100 observed per-task counts were 4 of 4. In these simulations, the interval's false-alarm rate at 4 trials was 0.003, so the interval is conservative here. No calibration row covers this setting. No correlation between the arms was visible at this size (4 informative tasks). If shared seeds couple the arms positively, the interval is conservative and low in power. A negative coupling would make it too narrow. A run-level shock within one submission's run cannot be measured here and can raise a pair's false-alarm rate to between 0.085 and 0.105. I chose the pair because both submissions list the same evaluation date. That date may describe an evaluation in another domain. If so, the reason for the choice is weaker. The five descriptive pairs and their caveats are in the <a href="https://github.com/althea-yuquan-chen/realdelta#study-on-public-leaderboard-data-tau2-bench-airline" target="_blank" rel="noopener">README</a> and the <a href="https://github.com/althea-yuquan-chen/realdelta/blob/main/examples/tau2_leaderboard/PROTOCOL.md" target="_blank" rel="noopener">protocol</a>.</div>
 
-  <h2>What I'd keep</h2>
+  <h2>Principles</h2>
   <ul>
-    <li><b>Fix the success criteria before the run.</b> A failed run then leads to a documented fix rather than a quiet adjustment.</li>
-    <li><b>Read the failures as well as the rate.</b></li>
-    <li><b>Refuse rather than guess.</b> An unchecked interval raises an error instead of returning a number.</li>
+    <li><b>Fix the success criteria before the run.</b> A failed run then leads to a documented fix.</li>
+    <li><b>Read the failures as well as the rate.</b> The real-model section above shows why.</li>
+    <li><b>Refuse or warn rather than guess.</b> The population-scope change raises an error. The command-line reports print a warning for settings outside the tested range.</li>
   </ul>
 
   <div class="foot">
