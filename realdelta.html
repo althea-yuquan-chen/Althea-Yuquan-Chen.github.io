@@ -15,7 +15,7 @@
 <meta property="og:image" content="https://althea-yuquan-chen.github.io/assets/og/realdelta.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="627">
-<meta property="og:image:alt" content="Simulated chance of detecting 3 broken cases out of 40: 0.13 with 1 trial per case, 0.54 with 3, 0.85 with 5 and 0.99 with 10, while false alarms stay between 0.020 and 0.043.">
+<meta property="og:image:alt" content="Same model, same prompt, same 40 tasks run twice: 87.5% then 85.5%, and 19 of the 40 tasks scored differently between the two runs.">
 <meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
@@ -84,7 +84,7 @@
   <p>Run the same agent twice and some cases flip. In a simulated suite of 40 cases that pass about 95% of the time, run 5 times each, two runs of the <em>unchanged</em> agent differed by 2 points or more in 184 of 500 pairs (36.8%); a 4-point move sat at the 95th percentile of pure noise. realdelta gives pass-rate intervals for repeated trials, either for this fixed suite or for a population of cases like it, a paired comparison that reports a change as detected when its interval excludes zero, and a planner that simulates how many trials per case a given regression needs.</p>
 
   <figure>
-    <img src="assets/og/realdelta.png" width="1200" height="627" alt="Simulated chance of detecting 3 broken cases out of 40: 0.13 with 1 trial per case, 0.54 with 3, 0.85 with 5 and 0.99 with 10, while false alarms stay between 0.020 and 0.043.">
+    <img src="assets/figures/realdelta-planner.png" width="1200" height="627" alt="Simulated chance of detecting 3 broken cases out of 40: 0.13 with 1 trial per case, 0.54 with 3, 0.85 with 5 and 0.99 with 10, while false alarms stay between 0.020 and 0.043.">
     <figcaption>The planner's answer for a 40-case suite where 3 cases break: one trial per case catches it 13% of the time, five trials 85%, ten 99%. A simulation result for this setting, not a calibration claim: no gated calibration row has cases breaking outright, and 1 trial per case is also below the gated range.</figcaption>
   </figure>
 
