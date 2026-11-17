@@ -505,7 +505,7 @@
           <span class="tag">PyTorch</span>
         </p>
         <ul>
-          <li>Conceived and implemented Decision-Focused Uplift Modeling, which trains uplift models on the budget-constrained ranking decision they are deployed for. On the 13M-row Criteo benchmark, its AUUC is 2.2–3.7% above S-Learner, X-Learner and GRF (<a href="dfum.html">write-up</a>).</li>
+          <li>Conceived and implemented Decision-Focused Uplift Modeling, which trains uplift models on the budget-constrained ranking decision they are deployed for. On the 13.98M-row Criteo benchmark, its AUUC is 2.2–3.7% above S-Learner, X-Learner and GRF (<a href="dfum.html">write-up</a>).</li>
         </ul>
       </div>
     </div>
@@ -525,7 +525,7 @@
         </figure>
         <div class="proj-body">
           <h3>realdelta: is that eval change real, or noise?</h3>
-          <p class="stat">Simulated: an unchanged agent moved ≥2 pts in 37% of re-runs · 5 trials per case catch 3 broken cases of 40 85% of the time (1 trial: 13%)</p>
+          <p class="stat">Simulated: an unchanged agent's pass rate differed by ≥2 pts in 36.8% of run pairs · 5 trials per case catch 3 broken cases of 40 85% of the time (1 trial: 13%)</p>
           <p>An unchanged agent re-run can move its pass rate by several points, so a 4-point "improvement" may be noise. realdelta gives pass-rate intervals for repeated trials, paired comparisons and a planner for how many trials to run. I checked the intervals on a calibration grid fixed in advance. The first run failed, and the fix went through two written amendments rather than a moved threshold.</p>
           <div class="tags">
             <span class="tag">LLM Evals</span>
@@ -564,7 +564,7 @@
         <div class="proj-body">
           <h3>Decision-Focused Uplift Modeling</h3>
           <p class="stat">AUUC 0.867 · +2.2–3.7% over S-/X-Learner and GRF · 13.98M rows</p>
-          <p>Uplift models decide who gets a coupon, yet they are trained to predict well everywhere rather than to pick the top slice a budget allows. DFUM trains for that decision with a closed-form Lagrangian dual of the top-K choice, and ranks customers better than every baseline compared on Criteo's 13M-record benchmark.</p>
+          <p>Uplift models decide who gets a coupon, yet they are trained to predict well everywhere rather than to pick the top slice a budget allows. DFUM trains for that decision with a closed-form Lagrangian dual of the top-K choice, and has the highest AUUC of the models compared on Criteo's 13.98M-row benchmark.</p>
           <div class="tags">
             <span class="tag">Causal Inference</span>
             <span class="tag">Optimization</span>
