@@ -95,7 +95,7 @@
     <li><b>A pre-registered coverage check, with its failures published.</b> The protocol, the grid and a 0.93 gate on estimated coverage were committed before any final result. The first final run failed in two places. With 5 cases, 1 trial each and rates near 100%, the suite pass-rate interval then used (Wilson) covered 0.917, and the population-scope comparison failed its width rule, so it is not shipped. The pass-rate method now used was designed after that failure. It passed the rerun grid, which is its independent evidence. The comparison is gated for 10 to 50 cases with 3 to 10 trials per case.</li>
     <li><b>Measured behavior when three of its assumptions fail</b>, reported and not gated (see the table further down).</li>
   </ul>
-  <p>It takes pass/fail outcomes only, was checked at the 95% level only, and has no pass^k, no multiple-comparison correction and an uncalibrated p-value. For pass rates closer to 100% than its gated rows, the comparison rests on a reported-only diagnostic and has low power.</p>
+  <p>It takes pass/fail outcomes only, was checked at the 95% level only, and has no interval for pass^k (only a per-case point estimate, <code>pass_hat_k</code>), no multiple-comparison correction and an uncalibrated p-value. For pass rates closer to 100% than its gated rows, the comparison rests on a reported-only diagnostic and has low power.</p>
 
   <h2>What it looks like</h2>
   <p>Two comparisons from the repository's synthetic demo: 40 cases, 5 trials each, against the same baseline run. The first candidate is the unchanged agent run again. In the second, 3 cases always fail.</p>
